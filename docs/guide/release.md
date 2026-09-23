@@ -20,7 +20,7 @@ updated: 2026-09-23
 | npm 包 | `@altmanlib/milkdown-kit`（`packages/core`）、`@altmanlib/milkdown-kit-vue`（`packages/vue`），都是 public |
 | npm 账号 | 用户 `altmanlib`（`@altmanlib` 是它的个人 scope），已开 2FA（安全密钥），已关联 GitHub `@altmanlib`，邮箱已验证 |
 | GitHub 仓库 | `altmanlib/milkdown-kit`，public，默认分支 `main` |
-| Trusted Publisher | 每个包单独配置。仓库 `altmanlib/milkdown-kit`，workflow `release.yml`，无 environment，权限 `npm publish` + `npm stage publish`。`@altmanlib/milkdown-kit` 已配置；`@altmanlib/milkdown-kit-vue` 尚未发布，首次发布后按 §5.1 配置 |
+| Trusted Publisher | 每个包单独配置。仓库 `altmanlib/milkdown-kit`，workflow `release.yml`，无 environment，权限 `npm publish` + `npm stage publish`。两个包都已配置 |
 | npm Publishing access | 每个包单独配置。Require two-factor authentication and disallow bypass 2fa tokens：任何 token 都不能绕过 2FA 发布，CI 只能通过 Trusted Publisher 发布 |
 | GitHub Actions 设置 | 已开启「Allow GitHub Actions to create and approve pull requests」，否则 Release workflow 无法创建「Version Packages」PR |
 | 各包 `package.json` | `repository.url` 为 `git+https://github.com/altmanlib/milkdown-kit.git`，provenance 要求它和发布所在仓库完全一致；`repository.directory` 指向包所在目录 |
@@ -95,7 +95,7 @@ npm view @altmanlib/milkdown-kit-vue version dependencies
 - Vue 包的 `dependencies` 中核心包是普通版本范围，不是 `workspace:`
 - GitHub 上每个包有 `<包名>@<version>` 的 tag 和 Release（例如 `@altmanlib/milkdown-kit@0.2.0`，多包仓库中 changesets 使用这个格式）
 
-新发布的版本在 registry 上可能有几十秒的延迟，期间 `npm view` 返回 404 属于正常现象
+新发布的版本在 registry 上有延迟，期间 `npm view` 和安装返回 404 属于正常现象。0.2.0 实测：版本元数据在 CI 报告发布成功后约 3 分钟出现，tarball 约 8 分钟后才能下载、安装（样本 1 次）；直接请求 `https://registry.npmjs.org/<包名>` 比 `npm view` 更早看到结果
 
 ## 3. 依赖升级
 
@@ -147,7 +147,8 @@ bun install
 | 发布时报 `ENEEDAUTH` 或 404 | Trusted Publisher 配置和实际不一致 | 在 npm 包页 Settings → Trusted Publisher 核对仓库名和 workflow 文件名（区分大小写，含 `.yml`）；修改 `release.yml` 的文件名后必须同步修改这里 |
 | 发布只进入 staged，没有正式发布 | Trusted Publisher 缺少 `npm publish` 权限 | 编辑连接，勾选「Allow npm publish」。新建连接时这一项默认**不勾选** |
 | provenance 生成失败 | `package.json` 的 `repository` 和仓库不一致，或仓库改为私有 | 修正 `repository` 字段；私有仓库不生成 provenance |
-| `0.1.0` 在 npm 上没有 provenance 标识 | 该版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
+| `@altmanlib/milkdown-kit@0.1.0`、`@altmanlib/milkdown-kit-vue@0.2.0` 在 npm 上没有 provenance 标识 | 这两个版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
+| 「Version Packages」PR 上的 CI 显示 `action_required`，合并后变为 `failure` 且没有任何 job | GitHub 不会自动运行由 bot 创建的 PR 的 workflow | 该 PR 只改动版本号和 CHANGELOG，以 `main` 上对应提交的 CI 结果为准；手动发布前在本地跑一遍 §2.2 的检查 |
 
 ## 5. 手动发布
 
@@ -164,7 +165,7 @@ bun install
 script -q /tmp/npm-publish.log npm publish --auth-type=web
 ```
 
-从 `/tmp/npm-publish.log` 中取出 `https://www.npmjs.com/auth/cli/...` 链接，在浏览器中完成验证；输出 `+ @altmanlib/milkdown-kit@<version>` 即为成功
+从 `/tmp/npm-publish.log` 中取出 `https://www.npmjs.com/auth/cli/...` 链接，在浏览器中完成验证；输出 `+ <包名>@<version>` 即为成功。链接会过期（实测约 7.5 分钟，样本 1 次），过期后 npm 以 `404 Not Found - GET .../-/v1/done` 退出、不会发布，重新执行即可。可以用 `open <链接>` 直接在默认浏览器中打开
 
 手动发布的版本没有 provenance，也不会自动创建 git tag 和 GitHub Release；需要时用 `gh release create '<包名>@<version>' --target <发版提交> --notes-file <该包 CHANGELOG 中对应版本的内容>` 补建
 
