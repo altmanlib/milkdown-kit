@@ -1,5 +1,12 @@
 # @altmanlib/milkdown-kit
 
+## 0.1.1
+
+### Patch Changes
+
+- 5ddea8d: Show the link preview in an empty image block as a small thumbnail instead of a full-size image overlapping the document, and keep the confirm button on one line
+- 5ddea8d: Keep the first content block's top margin stable when the editor gains focus or text is selected, so the document no longer jumps by one line
+
 ## 0.1.0
 
 ### Minor Changes
