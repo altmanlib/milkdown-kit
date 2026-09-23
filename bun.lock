@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@altmanlib/md-editor",
+      "name": "milkdown-kit-monorepo",
       "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.5",
         "@changesets/cli": "^3.0.3",
@@ -25,7 +25,7 @@
     },
     "packages/core": {
       "name": "@altmanlib/milkdown-kit",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "dependencies": {
         "@codemirror/language": "^6.10.1",
         "@codemirror/language-data": "^6.3.1",
@@ -37,9 +37,9 @@
     },
     "packages/vue": {
       "name": "@altmanlib/milkdown-kit-vue",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "dependencies": {
-        "@altmanlib/milkdown-kit": "^0.1.1",
+        "@altmanlib/milkdown-kit": "^0.2.0",
       },
       "peerDependencies": {
         "vue": "^3.5.0",
