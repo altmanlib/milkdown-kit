@@ -6,7 +6,8 @@
 
 | 文档 | type | status | 说明 |
 |---|---|---|---|
-| [editor-architecture.md](design/editor-architecture.md) | design | published | 编辑器封装方案：选型、包名、分层、对外 API、Vue 组件、依赖与发布策略 |
+| [editor-architecture.md](design/editor-architecture.md) | design | published | 编辑器封装方案：选型、包名、分层、对外 API、Vue 组件、依赖、主题 token、构建与发布 |
+| [2026-09-23-01-markdown-normalization.md](record/2026-09-23-01-markdown-normalization.md) | record | published | Markdown 往返时的格式规范化及其影响 |
 
 ## 2. 目录约定
 
@@ -58,4 +59,4 @@
 
 ### 3.5 校验
 
-在项目脚手架阶段接入 `scripts/check-docs.ts`，校验 §3.2 的第 1–3 条，并加入 CI。接入前靠评审保证。本规范从第一篇文档起生效，没有需要补齐的历史文档
+`bun run check:docs`（`scripts/check-docs.ts`）校验 §3.2 的全部 4 条，CI 中通过 `bun run check` 执行。本规范从第一篇文档起生效，没有需要补齐的历史文档
