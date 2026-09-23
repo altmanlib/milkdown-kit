@@ -4,6 +4,8 @@
 
 > 本包不是 Milkdown 官方包。官方包名是 `@milkdown/kit`，注意区分
 
+![milkdown-kit editor](docs/assets/editor.png)
+
 ## 安装
 
 ```bash
