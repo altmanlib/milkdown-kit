@@ -1,6 +1,6 @@
 {
   "name": "@altmanlib/milkdown-kit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Opinionated Markdown editor built on Milkdown Crepe, with a Vue component",
   "license": "MIT",
   "type": "module",
@@ -68,5 +68,13 @@
   },
   "peerDependencies": {
     "vue": "^3.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/altmanlib/milkdown-kit.git"
+  },
+  "homepage": "https://github.com/altmanlib/milkdown-kit#readme",
+  "bugs": {
+    "url": "https://github.com/altmanlib/milkdown-kit/issues"
   }
 }

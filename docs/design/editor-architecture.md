@@ -338,8 +338,9 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 4. `locale` 和 `theme`：中文文案、token、紧凑密度、暗色、窄屏
 5. Vue 组件和组件测试
 6. 发布链路：changesets、CI、release workflow、publint / attw
-7. 首次发布：
-   1. 确认 npm 上的 `altmanlib` scope 归本人所有
-   2. 创建 GitHub 公开仓库，在 `package.json` 中补上 `repository` 字段——provenance 要求它和发布所在的仓库完全一致（区分大小写），然后推送
-   3. 在 npmjs.com 为包登记 Trusted Publisher（workflow 文件名 `release.yml`）
-   4. 合并「Version Packages」PR，发布 `0.1.0`
+7. 首次发布（Trusted Publisher 只能在已存在的包的设置页配置，所以 `0.1.0` 在本地手动发布）：
+   1. `package.json` 的 `repository` 指向 `github.com/altmanlib/milkdown-kit`，provenance 要求它和发布所在的公开仓库完全一致（区分大小写）
+   2. 本地执行 `changeset version` 生成 `0.1.0` 和 CHANGELOG 并提交
+   3. `npm login` 后执行 `bun run release`（手动发布没有 provenance）
+   4. 在 npmjs.com 的包设置中登记 Trusted Publisher（仓库 `altmanlib/milkdown-kit`，workflow 文件名 `release.yml`），并在 Publishing access 中禁止 token 发布
+   5. 推送。之后的版本都经「Version Packages」PR 由 CI 发布
