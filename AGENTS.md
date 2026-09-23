@@ -9,7 +9,7 @@
 - 不得以运行时方式 import `@milkdown/crepe` 根入口，只能 import `@milkdown/crepe/builder` 和 `@milkdown/crepe/feature/*`，否则会把 KaTeX 等未启用的功能打进使用方的包
 - TypeScript 固定在 6.x：TypeScript 7 不提供 vue-tsc 需要的 API
 - 用户可见的行为改动需要添加 changeset（`.changeset/*.md`）
-- 不在本地执行 `npm publish`；发布由 CI 完成，例外情况按 release.md §4 处理
+- 不在本地执行 `npm publish`；发布由 CI 完成，例外情况按 release.md §5 处理
 - `git push`、打 tag、创建 GitHub Release 只在仓库所有者明确同意后执行
 
 ## 浏览器自动化

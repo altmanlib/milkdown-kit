@@ -89,7 +89,25 @@ npm view @altmanlib/milkdown-kit version
 
 新发布的版本在 registry 上可能有几十秒的延迟，期间 `npm view` 返回 404 属于正常现象
 
-## 3. 已知现象
+## 3. 依赖升级
+
+Dependabot（`.github/dependabot.yml`）每月按分组提 PR。Dependabot 的 PR 不带 changeset，是否需要补按下表判断：
+
+| 分组 | 影响 | changeset |
+|---|---|---|
+| `milkdown`（`@milkdown/*`） | 本包锁定 `~7.22.x`，使用方只能通过本包发版拿到新版 Milkdown | 需要，`patch` |
+| `codemirror`、`@floating-ui/dom` 等使用 `^` 范围的运行时依赖 | 只更新 `bun.lock`时，使用方自行解析版本；范围被改动时才影响使用方 | 范围被改动时需要 |
+| `dev-dependencies`、`actions` | 不进入发布产物 | 不需要 |
+
+合并 `milkdown` 分组的 PR 前：
+
+1. CI 通过。往返测试覆盖了图片规避逻辑，失败说明上游的 schema 或解析行为有变化
+2. 在 PR 分支上运行 `bun run dev`，在 playground 中检查：斜杠菜单（滚动、键盘导航）、选中文字工具栏、代码语言选择与高亮、暗色、窄屏、关闭图片上传
+3. 做一次使用方冒烟测试（§2.2）
+4. 检查图片规避是否还有必要：临时去掉 `create-editor.ts` 中的 `applyImageMarkdownFixes(...)` 调用并运行 `bun run test`。图片相关用例全部通过时，删除 `src/core/image-markdown.ts`，并更新设计文档 §2.2 和 §4.4
+5. 在 PR 分支上补一个 `patch` changeset，说明升级到的 Milkdown 版本
+
+## 4. 已知现象
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
@@ -100,7 +118,7 @@ npm view @altmanlib/milkdown-kit version
 | provenance 生成失败 | `package.json` 的 `repository` 和仓库不一致，或仓库改为私有 | 修正 `repository` 字段；私有仓库不生成 provenance |
 | `0.1.0` 没有 git tag 和 GitHub Release，也没有 provenance | 该版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
 
-## 4. 手动发布（仅在 CI 无法使用时）
+## 5. 手动发布（仅在 CI 无法使用时）
 
 Publishing access 禁止 token 绕过 2FA，手动发布必须由账号持有人用安全密钥现场确认，无法无人值守完成
 
@@ -119,7 +137,7 @@ script -q /tmp/npm-publish.log npm publish --auth-type=web
 
 手动发布的版本没有 provenance，也不会自动创建 git tag 和 GitHub Release
 
-## 5. 撤回有问题的版本
+## 6. 撤回有问题的版本
 
 - 优先发布修复版本（`patch`）
 - 需要提示使用方避开某个版本时，使用 `npm deprecate @altmanlib/milkdown-kit@<version> "<原因>"`（同样需要 2FA 验证）
