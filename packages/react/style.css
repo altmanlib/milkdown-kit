@@ -1,0 +1,2 @@
+/* Re-exports the core styles so that users only need to depend on this package. */
+@import '@altmanlib/milkdown-kit/style.css';

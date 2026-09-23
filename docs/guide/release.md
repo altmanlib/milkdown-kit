@@ -17,10 +17,10 @@ updated: 2026-09-23
 
 | 项 | 现状 |
 |---|---|
-| npm 包 | `@altmanlib/milkdown-kit`（`packages/core`）、`@altmanlib/milkdown-kit-vue`（`packages/vue`），都是 public |
+| npm 包 | `@altmanlib/milkdown-kit`（`packages/core`）、`@altmanlib/milkdown-kit-vue`（`packages/vue`）已发布；`@altmanlib/milkdown-kit-react`（`packages/react`）待按 §5.1 完成首次发布 |
 | npm 账号 | 用户 `altmanlib`（`@altmanlib` 是它的个人 scope），已开 2FA（安全密钥），已关联 GitHub `@altmanlib`，邮箱已验证 |
 | GitHub 仓库 | `altmanlib/milkdown-kit`，public，默认分支 `main` |
-| Trusted Publisher | 每个包单独配置。仓库 `altmanlib/milkdown-kit`，workflow `release.yml`，无 environment，权限 `npm publish` + `npm stage publish`。两个包都已配置 |
+| Trusted Publisher | 每个包单独配置。仓库 `altmanlib/milkdown-kit`，workflow `release.yml`，无 environment，权限 `npm publish` + `npm stage publish`。core 与 vue 已配置；react 在首次手动发布后配置 |
 | npm Publishing access | 每个包单独配置。Require two-factor authentication and disallow bypass 2fa tokens：任何 token 都不能绕过 2FA 发布，CI 只能通过 Trusted Publisher 发布 |
 | GitHub Actions 设置 | 已开启「Allow GitHub Actions to create and approve pull requests」，否则 Release workflow 无法创建「Version Packages」PR |
 | 各包 `package.json` | `repository.url` 为 `git+https://github.com/altmanlib/milkdown-kit.git`，provenance 要求它和发布所在仓库完全一致；`repository.directory` 指向包所在目录 |

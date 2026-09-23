@@ -13,9 +13,9 @@ updated: 2026-09-25
 
 | 项 | 结论 |
 |---|---|
-| 包名 | `@altmanlib/milkdown-kit`（核心与样式）、`@altmanlib/milkdown-kit-vue`（Vue 组件） |
+| 包名 | `@altmanlib/milkdown-kit`（核心与样式）、`@altmanlib/milkdown-kit-vue`（Vue 组件）、`@altmanlib/milkdown-kit-react`（React 组件） |
 | 交付物 | 同一仓库（monorepo）发布的多个 npm 包：不依赖框架的核心包，以及基于核心的框架组件包 |
-| 支持的框架 | Vue 3 |
+| 支持的框架 | Vue 3、React 19 |
 | 使用方 | 自有的其他前端项目 |
 | 「开箱即用」的含义 | 功能组合、中文文案、紧凑主题都已预设好，使用方只需提供挂载点和业务回调（例如图片上传） |
 
@@ -80,7 +80,7 @@ updated: 2026-09-25
 
 ### 4.2 包名
 
-**结论**：核心包 `@altmanlib/milkdown-kit`，框架组件包 `@altmanlib/milkdown-kit-<框架>`（当前为 `@altmanlib/milkdown-kit-vue`）
+**结论**：核心包 `@altmanlib/milkdown-kit`，框架组件包 `@altmanlib/milkdown-kit-<框架>`（当前为 `@altmanlib/milkdown-kit-vue`、`@altmanlib/milkdown-kit-react`）
 
 **理由**：
 
@@ -112,11 +112,14 @@ packages/
   vue/                   @altmanlib/milkdown-kit-vue, depends on the core package only
     src/
     style.css            Re-exports the core styles
+  react/                 @altmanlib/milkdown-kit-react, depends on the core package only
+    src/
+    style.css            Re-exports the core styles
 ```
 
 依赖方向只能是框架包 → 核心包 → `@milkdown/crepe`。框架包只通过核心包的公开入口（`@altmanlib/milkdown-kit`）使用核心，不引用核心的内部文件；框架包之间互不依赖。`locale` 只被 `core` 引用
 
-Vue 组件不使用 `@milkdown/vue`：核心已经负责编辑器的创建和销毁，组件直接调用 `createEditor()`，不需要再加一层上游的封装
+框架组件不使用 `@milkdown/vue` 或上游 React 封装：核心已经负责编辑器的创建和销毁，组件直接调用 `createEditor()`，不需要再加一层上游的封装
 
 ### 4.4 核心 API
 
@@ -181,6 +184,35 @@ Vue 组件不使用 `@milkdown/vue`：核心已经负责编辑器的创建和销
 | 根节点 | `div.md-editor-host`，组件上的 `class` / `style` 落在这里 |
 | 类型 | 同时导出核心包的 `EditorHandle`、`FeatureName`、`Locale`、`CodeBlockToolsMode`，使用方不需要直接依赖核心包 |
 
+### 4.5.1 React 组件
+
+由 `@altmanlib/milkdown-kit-react` 提供
+
+```tsx
+<MdEditor
+  value={content}
+  onChange={setContent}
+  readonly={false}
+  uploadImage={upload}
+  codeBlockTools="always"
+  onReady={onReady}
+  ref={editorRef}
+/>
+```
+
+| 项 | 结论 |
+|---|---|
+| 受控内容 | `value` / `onChange`，语义对齐 Vue 的 `v-model` |
+| 其他 props | 和 `MdEditorOptions` 一一对应，camelCase 命名；另增 `onReady`、`className`、`style` |
+| 外部改值 | 只有当新值和组件上次同步的值不同时，才调用 `setMarkdown()`，避免循环更新和光标跳动 |
+| `readonly` | 响应式，变化时调用 `setReadonly()` |
+| 其他 props 变化 | 不响应。`features`、`locale`、`uploadImage`、`codeBlockTools` 等只在创建时生效，需要变化时由使用方通过 `key` 重建组件 |
+| 实例访问 | `ref` 作为普通 prop（React 19），类型为 `EditorHandle \| null`；同时通过 `onReady` 回调传出 |
+| 生命周期 | 挂载时创建，卸载时调用 `destroy()`；在编辑器就绪前卸载，就绪后立即销毁 |
+| 根节点 | `div.md-editor-host`，`className` / `style` 落在这里 |
+| 类型 | 同时导出核心包的 `EditorHandle`、`FeatureName`、`Locale`、`CodeBlockToolsMode`，使用方不需要直接依赖核心包 |
+| peer 依赖 | `react` / `react-dom` 为 `^19.0.0` |
+
 ### 4.6 包结构与导出
 
 每个包的导出结构相同：
@@ -202,6 +234,7 @@ Vue 组件不使用 `@milkdown/vue`：核心已经负责编辑器的创建和销
 |---|---|
 | `@altmanlib/milkdown-kit` | `./dist/style.css`，由 `scripts/build-css.ts` 构建的完整样式 |
 | `@altmanlib/milkdown-kit-vue` | `./style.css`，只有一行 `@import '@altmanlib/milkdown-kit/style.css'` |
+| `@altmanlib/milkdown-kit-react` | `./style.css`，只有一行 `@import '@altmanlib/milkdown-kit/style.css'` |
 
 - 只输出 ESM，附带 `.d.ts`
 - 使用方要自己引入 `style.css`，JS 入口不自动注入样式
@@ -218,6 +251,7 @@ Vue 组件不使用 `@milkdown/vue`：核心已经负责编辑器的创建和销
 | `@floating-ui/dom` | 核心包 `dependencies` | 和 `@milkdown/plugin-slash` 的依赖范围一致 | 斜杠菜单的 `shift` / `size` middleware |
 | `@altmanlib/milkdown-kit` | 框架包 `dependencies` | `^<当前版本>`，不用 `workspace:` 协议 | 见§4.9。版本号由 changesets 在发版时同步 |
 | `vue` | Vue 包 `peerDependencies` | `^3.5.0` | 使用宿主项目的 Vue 实例。下限和 Crepe 依赖的 `vue ^3.5.20` 保持同一个 minor，避免宿主安装出两份 Vue |
+| `react`、`react-dom` | React 包 `peerDependencies` | `^19.0.0` | 使用宿主项目的 React 实例。`ref` 作为普通 prop，不使用已弃用的 `forwardRef` |
 | 构建、测试工具 | 根目录 `devDependencies` | — | 所有包共用一套工具链版本 |
 | `typescript` | 根目录 `devDependencies` | `~6.0.3` | TypeScript 7 不提供 vue-tsc 需要的 API（§2.3） |
 
@@ -246,7 +280,7 @@ token 清单见 [api.md](../reference/api.md) §5。圆角分 `sm` / `md` / `lg`
 |---|---|
 | 仓库形态 | monorepo，bun workspaces（`packages/*`）。根目录 `private: true`，不发布 |
 | 包管理 | bun，版本由根目录 `package.json` 的 `packageManager` 固定；CI 中的 `setup-bun` 通过 `bun-version-file: package.json` 读取同一版本，保证本地和 CI 行为一致 |
-| JS 构建 | 每个包各自用 tsdown 构建；Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成。框架包把核心包当作外部依赖，不打进产物。根目录 `bun run build` 先构建核心包，再构建框架包 |
+| JS 构建 | 每个包各自用 tsdown 构建；Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成；React 包输出 ESM 与 `.d.ts`。框架包把核心包当作外部依赖，不打进产物。根目录 `bun run build` 先构建核心包，再构建框架包 |
 | CSS 构建 | 核心包的 `scripts/build-css.ts` 用 lightningcss 把 `@import` 内联成单个 `dist/style.css`。不用 tsdown 的 CSS 功能，它仍标为 experimental |
 | 源码解析 | 类型检查、测试和 playground 把 `@altmanlib/milkdown-kit` 指向核心包源码（`tsconfig.json` 的 `paths` 和 `workspace-alias.ts`），不需要先构建 |
 | 开发预览 | 仓库内的 `playground/`（Vite + Vue），只用于演示，不进入发布产物 |
@@ -272,7 +306,7 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 
 ## 5. 影响面
 
-- 使用方只依赖各包的公开 API（§4.4、§4.5）和 CSS token（§4.8），Milkdown 升级对使用方透明
+- 使用方只依赖各包的公开 API（§4.4、§4.5、§4.5.1）和 CSS token（§4.8），Milkdown 升级对使用方透明
 - major 版本只在公开 API 或 CSS token 不兼容时升级，与 Milkdown 的版本号无关
 - `0.x` 阶段 API 允许不兼容变更，由 changesets 在 changelog 中写明
 - 升级 Milkdown 时，§2.2 的规避代码需要复查：上游修复后删除对应规避，往返测试保证行为不变
@@ -283,7 +317,7 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 |---|---|---|
 | 往返 | vitest + happy-dom | 标题、行内标记、有序/无序/任务列表、引用、代码块、表格、分割线、中文、块级和行内图片（有无 title、有无 alt、缩放比例）；无 title 图片前后的内容不丢失 |
 | 核心 | vitest + happy-dom | 挂载与销毁、data 属性、`setMarkdown()` 不触发 `onChange`、用户编辑触发 `onChange`、只读切换、占位文案 |
-| 组件 | vitest + `@vue/test-utils` | 初始值与暴露的句柄、外部改值写入、自身发出的值不回写、只读响应、卸载时销毁、就绪前卸载 |
+| 组件 | vitest + `@vue/test-utils` / `@testing-library/react` | 初始值与暴露的句柄、外部改值写入、自身发出的值不回写、只读响应、卸载时销毁、就绪前卸载 |
 | SSR | vitest（node 环境） | 在没有 DOM 的环境中 import 各包入口不报错 |
 | 包产物 | 每个包运行 `publint`、`@arethetypeswrong/cli`（`--profile esm-only`，排除 `style.css`） | `exports` 和类型声明正确 |
 
@@ -318,7 +352,6 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 - 不支持 SSR 渲染编辑器；只保证在 SSR 环境中 import 时不报错
 - 不做协同编辑（Yjs）
 - 不输出 CJS
-- 当前不提供 React 组件（触发条件见 §9）
 
 ## 9. 开放项
 
@@ -327,6 +360,5 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | 编号 | 项 | 触发条件 | 处理方式 |
 |---|---|---|---|
 | R05 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
-| R06 | React 组件 | 有 React 项目需要接入 | 新增 `packages/react`（`@altmanlib/milkdown-kit-react`），加入 changesets 的 `fixed` 分组。peer 依赖 `react` / `react-dom` 为 `^19.0.0`，`ref` 作为普通 prop，不使用已标为弃用的 `forwardRef`。有接入项目停留在 React 18 时，再放宽到 `^18.0.0 \|\| ^19.0.0`（兼容变更），并在 CI 中加入 React 18 的测试 |
 | R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
 | R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |

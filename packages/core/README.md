@@ -4,7 +4,7 @@
 
 > 本包不是 Milkdown 官方包。官方包名是 `@milkdown/kit`，注意区分
 
-使用 Vue 时请安装 [`@altmanlib/milkdown-kit-vue`](https://www.npmjs.com/package/@altmanlib/milkdown-kit-vue)
+使用 Vue 时请安装 [`@altmanlib/milkdown-kit-vue`](https://www.npmjs.com/package/@altmanlib/milkdown-kit-vue)；使用 React 时请安装 [`@altmanlib/milkdown-kit-react`](https://www.npmjs.com/package/@altmanlib/milkdown-kit-react)
 
 ## 安装
 

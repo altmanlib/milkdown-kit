@@ -1,6 +1,6 @@
 # milkdown-kit
 
-基于 [Milkdown](https://milkdown.dev) Crepe 预配置好的 Markdown 编辑器：中文界面、紧凑主题、暗色模式、Vue 3 组件，开箱即用
+基于 [Milkdown](https://milkdown.dev) Crepe 预配置好的 Markdown 编辑器：中文界面、紧凑主题、暗色模式、Vue 3 / React 19 组件，开箱即用
 
 > 本项目不是 Milkdown 官方项目。官方包名是 `@milkdown/kit`，注意区分
 
@@ -11,6 +11,7 @@
 | 包 | 用途 |
 |---|---|
 | [`@altmanlib/milkdown-kit-vue`](packages/vue) | Vue 3 组件 |
+| [`@altmanlib/milkdown-kit-react`](packages/react) | React 19 组件 |
 | [`@altmanlib/milkdown-kit`](packages/core) | 不依赖框架的核心 API 和样式；框架组件都基于它 |
 
 所有包使用同一个版本号
@@ -21,11 +22,14 @@
 # Vue
 npm install @altmanlib/milkdown-kit-vue
 
+# React
+npm install @altmanlib/milkdown-kit-react
+
 # Without a framework
 npm install @altmanlib/milkdown-kit
 ```
 
-Vue 组件要求项目中已安装 `vue@^3.5`
+Vue 组件要求项目中已安装 `vue@^3.5`。React 组件要求 `react@^19` 和 `react-dom@^19`
 
 ## 使用
 
@@ -48,6 +52,25 @@ async function uploadImage(file: File): Promise<string> {
 <template>
   <MdEditor v-model="content" :upload-image="uploadImage" />
 </template>
+```
+
+### React
+
+```tsx
+import '@altmanlib/milkdown-kit-react/style.css'
+import { MdEditor } from '@altmanlib/milkdown-kit-react'
+import { useState } from 'react'
+
+export function App() {
+  const [content, setContent] = useState('# Hello')
+
+  async function uploadImage(file: File): Promise<string> {
+    // Upload to your storage and return the public URL
+    return 'https://example.com/image.png'
+  }
+
+  return <MdEditor value={content} onChange={setContent} uploadImage={uploadImage} />
+}
 ```
 
 ### 不使用框架
@@ -87,16 +110,34 @@ const content = ref('# Hello')
 </template>
 ```
 
+```tsx
+import '@altmanlib/milkdown-kit-react/style.css'
+import { lazy, Suspense, useState } from 'react'
+
+const MdEditor = lazy(() =>
+  import('@altmanlib/milkdown-kit-react').then((m) => ({ default: m.MdEditor })),
+)
+
+export function App() {
+  const [content, setContent] = useState('# Hello')
+  return (
+    <Suspense fallback={null}>
+      <MdEditor value={content} onChange={setContent} />
+    </Suspense>
+  )
+}
+```
+
 样式（约 8 KB gzip）保持静态引入，避免编辑器出现时闪烁。代码块各语言的语法本身就是用到时才加载
 
 ## 配置
 
 | 选项 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `defaultValue` | `string` | `''` | 初始内容（Vue 组件用 `v-model`） |
+| `defaultValue` | `string` | `''` | 初始内容（Vue 用 `v-model`，React 用 `value` / `onChange`） |
 | `readonly` | `boolean` | `false` | 只读；Vue 组件中是响应式的 |
 | `placeholder` | `string` | 按 `locale` | 空文档的占位文案 |
-| `onChange` | `(markdown) => void` | — | 用户编辑后触发，200ms 防抖（Vue 组件用 `v-model`） |
+| `onChange` | `(markdown) => void` | — | 用户编辑后触发，200ms 防抖（Vue 用 `v-model`，React 用 `onChange`） |
 | `uploadImage` | `(file) => Promise<string>` | — | 上传图片并返回 URL；不提供时只能粘贴图片链接 |
 | `features` | `Partial<Record<FeatureName, boolean>>` | 全部开启 | 关闭某个功能，例如 `{ table: false }` |
 | `locale` | `'zh-CN' \| 'en'` | `'zh-CN'` | 界面语言 |
@@ -104,7 +145,7 @@ const content = ref('# Hello')
 
 `FeatureName`：`code-mirror`、`list-item`、`link-tooltip`、`cursor`、`image-block`、`block-edit`、`toolbar`、`placeholder`、`table`
 
-除 `readonly` 外，其他选项只在创建时生效。在 Vue 中需要变更时，通过 `:key` 重建组件
+除 `readonly` 外，其他选项只在创建时生效。需要变更时，通过 `key` 重建组件
 
 ## 主题
 

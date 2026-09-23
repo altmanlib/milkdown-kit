@@ -1,0 +1,45 @@
+{
+  "name": "@altmanlib/milkdown-kit-react",
+  "version": "0.2.0",
+  "description": "React 19 component for @altmanlib/milkdown-kit, an opinionated Markdown editor built on Milkdown Crepe",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "style.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./style.css": "./style.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/altmanlib/milkdown-kit.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/altmanlib/milkdown-kit#readme",
+  "bugs": {
+    "url": "https://github.com/altmanlib/milkdown-kit/issues"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@altmanlib/milkdown-kit": "^0.2.0"
+  }
+}

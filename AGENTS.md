@@ -6,7 +6,7 @@
 
 ## 仓库结构
 
-bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`packages/vue`（`@altmanlib/milkdown-kit-vue`）。根目录不发布，开发依赖、测试和 playground 都在根目录
+bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`packages/vue`（`@altmanlib/milkdown-kit-vue`）、`packages/react`（`@altmanlib/milkdown-kit-react`）。根目录不发布，开发依赖、测试和 playground 都在根目录
 
 ## 硬性约束
 
@@ -30,5 +30,5 @@ bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`pack
 |---|---|
 | `bun run dev` | 启动 playground（`playground/`） |
 | `bun run check` | 类型检查、测试、文档检查 |
-| `bun run build` | 依次构建核心包（tsdown + `packages/core/scripts/build-css.ts`）和 Vue 包 |
+| `bun run build` | 依次构建核心包（tsdown + `packages/core/scripts/build-css.ts`）、Vue 包和 React 包 |
 | `bun run check:package` | 构建后对每个包运行 publint 和 attw |

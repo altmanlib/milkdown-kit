@@ -22,7 +22,7 @@ updated: 2026-09-25
 
 ## 2. 当前状态
 
-当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 提供 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](design/editor-architecture.md)
+当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 与 React 包 `@altmanlib/milkdown-kit-react` 提供各自的 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](design/editor-architecture.md)
 
 `0.x` 阶段允许不兼容变更（[editor-architecture.md](design/editor-architecture.md) §5）。1.0 表示对外 API 和 CSS token（[api.md](reference/api.md)）稳定，之后不兼容变更只进 major
 
@@ -46,7 +46,6 @@ updated: 2026-09-25
 | 编号 | 项 | 触发条件 | 详情 |
 |---|---|---|---|
 | R05 | 公式支持 | 有使用方需要公式 | [editor-architecture.md](design/editor-architecture.md) §9 |
-| R06 | React 组件 | 有 React 项目需要接入 | [editor-architecture.md](design/editor-architecture.md) §9 |
 | R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | [editor-architecture.md](design/editor-architecture.md) §9 |
 | R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | [editor-architecture.md](design/editor-architecture.md) §9 |
 | R09 | 删除图片 Markdown 规避 | 上游修复 §2.2 的缺陷 | [editor-architecture.md](design/editor-architecture.md) §5 |
