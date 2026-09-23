@@ -232,7 +232,7 @@ declare function createEditor(
 
 Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkdown/*`
 
-依赖更新由 Dependabot（`.github/dependabot.yml`）每月提 PR：`@milkdown/*` 归为一组，保证同版本升级；`@codemirror/*` 和 `@lezer/*` 归为一组；开发依赖归为一组；TypeScript 的 major 升级被忽略；GitHub Actions 版本归为一组。处理步骤见 [release.md](../guide/release.md) §3
+依赖升级：npm 依赖每月手动检查，`@milkdown/crepe` 与 `@milkdown/kit` 必须同版本升级；GitHub Actions 版本由 Dependabot 管理。Dependabot 的 bun 更新器只支持 `bun.lock` 的 `lockfileVersion` 1（bun ≥ 1.4 写入 2），所以 npm 依赖暂不交给它。步骤与触发条件见 [release.md](../guide/release.md) §3
 
 `vue` 标为 optional peer，是因为只使用核心入口的项目不需要 Vue
 

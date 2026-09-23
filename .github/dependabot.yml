@@ -1,22 +1,8 @@
 version: 2
 updates:
-  - package-ecosystem: bun
-    directory: /
-    schedule:
-      interval: monthly
-    groups:
-      # All @milkdown/* packages must stay on the same version.
-      milkdown:
-        patterns: ['@milkdown/*']
-      codemirror:
-        patterns: ['@codemirror/*', '@lezer/*']
-      dev-dependencies:
-        dependency-type: development
-    ignore:
-      # TypeScript 7 lacks the compiler API that vue-tsc needs.
-      - dependency-name: typescript
-        update-types: ['version-update:semver-major']
-
+  # npm dependencies are not managed here: Dependabot's bun updater only reads
+  # bun.lock lockfileVersion 1, while bun >= 1.4 writes version 2.
+  # See docs/guide/release.md §3 for the manual upgrade procedure.
   - package-ecosystem: github-actions
     directory: /
     schedule:

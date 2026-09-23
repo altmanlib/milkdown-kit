@@ -91,21 +91,35 @@ npm view @altmanlib/milkdown-kit version
 
 ## 3. 依赖升级
 
-Dependabot（`.github/dependabot.yml`）每月按分组提 PR。Dependabot 的 PR 不带 changeset，是否需要补按下表判断：
+### 3.1 自动与手动的分工
 
-| 分组 | 影响 | changeset |
+| 范围 | 方式 |
+|---|---|
+| GitHub Actions 版本 | Dependabot（`.github/dependabot.yml`）每月提一个分组 PR，不需要 changeset |
+| npm 依赖 | 每月手动检查一次（§3.2）。Dependabot 的 bun 更新器只能读取 `bun.lock` 的 `lockfileVersion` 1，而 bun ≥ 1.4 写入的是 2，所以没有交给 Dependabot |
+
+**改回由 Dependabot 管理 npm 依赖的触发条件**：Dependabot 的 bun 更新器支持 `lockfileVersion` 2。届时在 `dependabot.yml` 中加入 `package-ecosystem: bun`，把 `@milkdown/*` 分为一组，并忽略 `typescript` 的 major 升级
+
+### 3.2 手动检查
+
+```bash
+bun outdated
+```
+
+| 依赖 | 升级方式 | changeset |
 |---|---|---|
-| `milkdown`（`@milkdown/*`） | 本包锁定 `~7.22.x`，使用方只能通过本包发版拿到新版 Milkdown | 需要，`patch` |
-| `codemirror`、`@floating-ui/dom` 等使用 `^` 范围的运行时依赖 | 只更新 `bun.lock`时，使用方自行解析版本；范围被改动时才影响使用方 | 范围被改动时需要 |
-| `dev-dependencies`、`actions` | 不进入发布产物 | 不需要 |
+| `@milkdown/crepe`、`@milkdown/kit` | `bun add @milkdown/crepe@~<版本> @milkdown/kit@~<版本>`，两者必须同一版本 | 需要，`patch`，说明升级到的 Milkdown 版本。本包锁定 `~` 范围，使用方只能通过本包发版拿到新版 Milkdown |
+| `@codemirror/*`、`@lezer/highlight`、`@floating-ui/dom` | `bun update <包名>`，保持 `^` 范围不变 | 只更新 `bun.lock` 时不需要；改动了范围时需要 |
+| 开发依赖 | `bun update <包名>` | 不需要 |
+| `typescript` | 保持 6.x，不升级到 7（设计文档 §2.3） | 不需要 |
 
-合并 `milkdown` 分组的 PR 前：
+### 3.3 升级 Milkdown 后的检查
 
-1. CI 通过。往返测试覆盖了图片规避逻辑，失败说明上游的 schema 或解析行为有变化
-2. 在 PR 分支上运行 `bun run dev`，在 playground 中检查：斜杠菜单（滚动、键盘导航）、选中文字工具栏、代码语言选择与高亮、暗色、窄屏、关闭图片上传
+1. `bun run check` 通过。往返测试覆盖了图片规避逻辑，失败说明上游的 schema 或解析行为有变化
+2. `bun run dev`，在 playground 中检查：斜杠菜单（滚动、键盘导航）、选中文字工具栏、代码语言选择与高亮、暗色、窄屏、关闭图片上传
 3. 做一次使用方冒烟测试（§2.2）
 4. 检查图片规避是否还有必要：临时去掉 `create-editor.ts` 中的 `applyImageMarkdownFixes(...)` 调用并运行 `bun run test`。图片相关用例全部通过时，删除 `src/core/image-markdown.ts`，并更新设计文档 §2.2 和 §4.4
-5. 在 PR 分支上补一个 `patch` changeset，说明升级到的 Milkdown 版本
+5. 同步更新设计文档 §2.1 中的上游版本信息
 
 ## 4. 已知现象
 
