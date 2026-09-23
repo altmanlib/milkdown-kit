@@ -51,6 +51,29 @@ editor.setMarkdown('# Replaced')
 await editor.destroy()
 ```
 
+### 按需加载（推荐）
+
+编辑器的 JS 约 240 KB（gzip）。编辑器不在首屏时，用异步组件加载，首屏只多一个很小的入口：
+
+```vue
+<script setup lang="ts">
+import '@altmanlib/milkdown-kit/style.css'
+import { defineAsyncComponent, ref } from 'vue'
+
+const MdEditor = defineAsyncComponent(() =>
+  import('@altmanlib/milkdown-kit/vue').then((m) => m.MdEditor),
+)
+
+const content = ref('# Hello')
+</script>
+
+<template>
+  <MdEditor v-model="content" />
+</template>
+```
+
+样式（约 8 KB gzip）保持静态引入，避免编辑器出现时闪烁。代码块各语言的语法本身就是用到时才加载
+
 ## 配置
 
 | 选项 | 类型 | 默认 | 说明 |

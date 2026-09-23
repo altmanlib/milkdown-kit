@@ -232,6 +232,8 @@ declare function createEditor(
 
 Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkdown/*`
 
+依赖更新由 Dependabot（`.github/dependabot.yml`）每月提 PR：`@milkdown/*` 归为一组，保证同版本升级；`@codemirror/*` 和 `@lezer/*` 归为一组；开发依赖归为一组；TypeScript 的 major 升级被忽略；GitHub Actions 版本归为一组。处理步骤见 [release.md](../guide/release.md) §3
+
 `vue` 标为 optional peer，是因为只使用核心入口的项目不需要 Vue
 
 **TypeScript 升到 7 的触发条件**：vue-tsc 和 rolldown-plugin-dts 支持 TypeScript 7 的原生编译器，可以生成 `.vue` 组件的类型声明
@@ -295,9 +297,13 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 
 | 产物 | gzip 体积 |
 |---|---|
-| 首屏 JS（含 Vue 运行时） | 363,394 字节 |
+| 静态引入时的首屏 JS（含 Vue 运行时） | 363,394 字节 |
+| 用 `defineAsyncComponent` 按需加载时的首屏 JS（含 Vue 运行时） | 25,357 字节 |
+| 按需加载时的编辑器 chunk | 239,921 字节 |
 | CSS | 7,717 字节 |
 | 代码语言语法 | 按需懒加载，拆成独立 chunk |
+
+README 推荐使用方按需加载编辑器，包内不做额外的体积优化
 
 打包体积不设上限，CI 的 job summary 记录每次构建的 gzip 体积，作为以后设定上限的基线
 
