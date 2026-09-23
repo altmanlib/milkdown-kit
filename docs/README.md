@@ -7,6 +7,7 @@
 | 文档 | type | status | 说明 |
 |---|---|---|---|
 | [editor-architecture.md](design/editor-architecture.md) | design | published | 编辑器封装方案：选型、包名、分层、对外 API、Vue 组件、依赖、主题 token、构建与发布 |
+| [release.md](guide/release.md) | guide | published | 发版流程：发布配置现状、changeset、检查、已知现象、手动发布与撤回 |
 | [2026-09-23-01-markdown-normalization.md](record/2026-09-23-01-markdown-normalization.md) | record | published | Markdown 往返时的格式规范化及其影响 |
 
 ## 2. 目录约定

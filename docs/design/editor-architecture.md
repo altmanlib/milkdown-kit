@@ -15,7 +15,7 @@ updated: 2026-09-23
 |---|---|
 | 包名 | `@altmanlib/milkdown-kit` |
 | 交付物 | 一个 npm 包，包含：不依赖框架的核心接口、Vue 组件、样式文件 |
-| 首个支持的框架 | Vue 3 |
+| 支持的框架 | Vue 3 |
 | 使用方 | 自有的其他前端项目 |
 | 「开箱即用」的含义 | 功能组合、中文文案、紧凑主题都已预设好，使用方只需提供挂载点和业务回调（例如图片上传） |
 
@@ -52,7 +52,7 @@ updated: 2026-09-23
 - 编辑器依赖 DOM，只能在浏览器中运行
 - 上游 API 仍在 7.x 中持续迭代。直接透传上游配置，会把上游的破坏性变更传给使用方
 - npm 包名的 scope 必须和发布账号的用户名或所属 org 同名
-- TypeScript 7 不再提供 vue-tsc 依赖的编译器 JS API，无法生成 `.vue` 组件的类型声明
+- TypeScript 7 不提供 vue-tsc 依赖的编译器 JS API，无法生成 `.vue` 组件的类型声明
 
 ## 3. 原则
 
@@ -87,11 +87,9 @@ updated: 2026-09-23
 - scope 和 GitHub 账号 `altmanlib` 一致，所有自有包可以放在同一个 scope 下
 - 包名和仓库名 `milkdown-kit` 一致，从包名就能看出底层是 Milkdown
 
-**代价**：和官方的 `@milkdown/kit` 只差一个斜杠和连字符，安装时容易写错。README 需要明确说明本包不是官方包
+**代价**：和官方的 `@milkdown/kit` 只差一个斜杠和连字符，安装时容易写错。README 开头注明本包不是官方包
 
-**CSS 命名不随包名变化**：类名 `.md-editor`、token 前缀 `--md-editor-*` 和组件名 `MdEditor` 保持不变。它们描述的是编辑器组件，不是包；改成 `milkdown` 前缀会和 Crepe 自带的 `.milkdown` 类名混淆
-
-**改名的触发条件**：npm 上的 `altmanlib` 用户名或 org 不属于本人，这时改用实际拥有的 scope
+**组件与 CSS 命名**：类名 `.md-editor`、token 前缀 `--md-editor-*`、组件名 `MdEditor` 按编辑器组件命名，不使用 `milkdown` 前缀，避免和 Crepe 自带的 `.milkdown` 类名混淆
 
 ### 4.3 分层
 
@@ -147,7 +145,7 @@ declare function createEditor(
 | 参数 | 实现方式 |
 |---|---|
 | `root` | 编辑器挂载到 `root` 内新建的 `div.md-editor` 容器里，`destroy()` 时移除这个容器，不改动 `root` 本身 |
-| `uploadImage` | `image-block` 的三个上传回调都指向它。未提供时，上传回调直接拒绝（不生成 `blob:` URL），容器带 `data-upload="disabled"`，CSS 隐藏上传按钮，占位文案改为「粘贴图片链接」 |
+| `uploadImage` | `image-block` 的三个上传回调都指向它。未提供时，上传回调直接拒绝，避免把会失效的 `blob:` URL 写进文档；容器带 `data-upload="disabled"`，CSS 隐藏上传按钮，占位文案为「粘贴图片链接」 |
 | `features` | 决定是否调用 `CrepeBuilder.addFeature()`。`FeatureName` 由本包自己定义，不直接复用 `CrepeFeature` |
 | `locale` | 展开成各功能的文案字段；默认 `zh-CN` |
 | `onChange` | 基于 `CrepeBuilder.on()` 注册的 listener，只在用户编辑时触发，`setMarkdown()` 不触发 |
@@ -230,7 +228,7 @@ declare function createEditor(
 | `@codemirror/language`、`@codemirror/language-data`、`@lezer/highlight` | `dependencies` | 和 Crepe 的依赖范围一致 | 补上按需组合时缺失的语言列表和高亮（§4.4），和 Crepe 共用同一份安装 |
 | `@floating-ui/dom` | `dependencies` | 和 `@milkdown/plugin-slash` 的依赖范围一致 | 斜杠菜单的 `shift` / `size` middleware |
 | `vue` | `peerDependencies`，标为 optional | `^3.5.0` | 使用宿主项目的 Vue 实例。下限和 Crepe 依赖的 `vue ^3.5.20` 保持同一个 minor，避免宿主安装出两份 Vue |
-| `typescript` | `devDependencies` | `~6.0.3` | TypeScript 7 不再提供 vue-tsc 需要的 API（§2.3） |
+| `typescript` | `devDependencies` | `~6.0.3` | TypeScript 7 不提供 vue-tsc 需要的 API（§2.3） |
 
 Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkdown/*`
 
@@ -246,13 +244,13 @@ Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkd
 |---|---|---|
 | 颜色 | `--md-editor-color-*` | 背景、文字、主色、边框（`border` / `divider`）、悬停（`hover` / `active` / `selected`）、弹层背景（`overlay`）等，映射到 Crepe 的 `--crepe-color-*` |
 | 圆角 | `--md-editor-radius-sm` / `md` / `lg` | 3px / 4px / 8px。`lg` 用于弹层，弹层内边距 4px，内部菜单项用 `md`，保证里外圆角同心 |
-| 阴影 | `--md-editor-shadow-sm` / `overlay` | 多层柔和阴影，暗色下用黑色阴影，不用 Crepe 暗色主题的白色外发光 |
+| 阴影 | `--md-editor-shadow-sm` / `overlay` | 多层柔和阴影；暗色下使用黑色阴影 |
 | 代码高亮 | `--md-editor-code-*` | 关键字、字符串、数字、注释、函数、类型、属性、元信息 |
 | 排版 | `--md-editor-font-*`、`--md-editor-font-size`、`--md-editor-line-height` | 默认 15px、行高 1.6，字体优先使用系统中文字体 |
 | 布局 | `--md-editor-padding` | 默认 `20px 32px 20px 64px`，左侧 64px 给块手柄预留位置 |
 
 - 暗色模式：`.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"` 时生效，不依赖 `prefers-color-scheme`
-- 密度：标题、段落、列表、代码块、表格的间距都比 Crepe 默认值紧凑
+- 密度：标题、段落、列表、代码块、表格采用紧凑间距
 - 弹层：斜杠菜单、选中文字工具栏、链接浮窗、代码语言选择、表格按钮组使用同一套背景、边框、圆角和阴影
 - 窄屏（≤ 480px）：隐藏块手柄并收窄内边距；斜杠菜单隐藏分组标签，最大高度 280px
 - token 定义在 `.md-editor` 上，宿主元素 `.md-editor-host` 读不到这些 token
@@ -268,7 +266,7 @@ Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkd
 | 开发预览 | 仓库内的 `playground/`（Vite + Vue），只用于演示，不进入发布产物 |
 | 版本与 changelog | changesets，配置 `access: public` |
 | CI | `.github/workflows/ci.yml`：类型检查、测试、文档检查、构建、publint、attw，并把 gzip 体积写入 job summary |
-| 发布 | `.github/workflows/release.yml`：`changesets/action` 在有 changeset 时开「Version Packages」PR，合并后执行 `bun run release`，通过 npm Trusted Publishing 发布并自动生成 provenance |
+| 发布 | `.github/workflows/release.yml`：`changesets/action` 在有 changeset 时开「Version Packages」PR，合并后执行 `bun run release`，通过 npm Trusted Publishing 发布并自动生成 provenance。操作步骤见 [release.md](../guide/release.md) |
 | 仓库形态 | 单个包，不使用 monorepo |
 
 npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5.1、Node ≥ 22.14.0、GitHub 托管的 runner、job 权限包含 `id-token: write`；npmjs.com 上登记的 workflow 文件名必须和 `release.yml` 完全一致。私有仓库不生成 provenance；provenance 还要求 `package.json` 的 `repository` 和发布所在的公开仓库完全一致
@@ -293,7 +291,7 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 | 包产物 | `publint`、`@arethetypeswrong/cli`（`--profile esm-only`，排除 `style.css`） | `exports` 和类型声明正确 |
 | 交互 | 在 playground 中手动验证 | 斜杠菜单、工具栏、代码语言选择、暗色、窄屏、关闭上传 |
 
-发布前，用 `bun pm pack` 打出的包安装到一个空的 Vite + Vue 项目中，执行 `vue-tsc`（`skipLibCheck: false`）和 `vite build`。2026-09-23 实测（样本 1 次构建）：
+使用方冒烟测试：把 `bun pm pack` 打出的包安装到空的 Vite + Vue 项目，执行 `vue-tsc`（`skipLibCheck: false`）和 `vite build`，步骤见 [release.md](../guide/release.md) §2.2。2026-09-23 实测结果（样本 1 次构建）：
 
 | 产物 | gzip 体积 |
 |---|---|
@@ -305,7 +303,7 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 
 ## 7. 迁移与兼容
 
-首个版本，没有迁移成本。浏览器支持范围以 Milkdown / ProseMirror 为准，不额外做降级
+浏览器支持范围以 Milkdown / ProseMirror 为准，不额外做降级
 
 Markdown 往返中的格式规范化（列表符号、标题风格等）不改变内容，详见 [2026-09-23-01-markdown-normalization.md](../record/2026-09-23-01-markdown-normalization.md)
 
@@ -317,7 +315,7 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 - 不支持 SSR 渲染编辑器；只保证在 SSR 环境中 import 时不报错
 - 不做协同编辑（Yjs）
 - 不输出 CJS
-- 首个版本不提供 React 组件
+- 当前不提供 React 组件（触发条件见 §9）
 
 ## 9. 开放项
 
@@ -329,18 +327,3 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | 自动化 E2E | 交互层出现回归，或交互改动变得频繁 | 把 §6 的手动交互验证写成 playwright 用例，在 CI 中针对 playground 运行 |
 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |
-
-## 10. 落地顺序
-
-1. 脚手架：`package.json`、TypeScript、tsdown、playground、`scripts/check-docs.ts`
-2. `core`：`createEditor()` 和默认功能组合
-3. 往返测试，以及发现的上游缺陷的规避（§2.2）
-4. `locale` 和 `theme`：中文文案、token、紧凑密度、暗色、窄屏
-5. Vue 组件和组件测试
-6. 发布链路：changesets、CI、release workflow、publint / attw
-7. 首次发布（Trusted Publisher 只能在已存在的包的设置页配置，所以 `0.1.0` 在本地手动发布）：
-   1. `package.json` 的 `repository` 指向 `github.com/altmanlib/milkdown-kit`，provenance 要求它和发布所在的公开仓库完全一致（区分大小写）
-   2. 本地执行 `changeset version` 生成 `0.1.0` 和 CHANGELOG 并提交
-   3. `npm login` 后执行 `bun run release`（手动发布没有 provenance）
-   4. 在 npmjs.com 的包设置中登记 Trusted Publisher（仓库 `altmanlib/milkdown-kit`，workflow 文件名 `release.yml`），并在 Publishing access 中禁止 token 发布
-   5. 推送。之后的版本都经「Version Packages」PR 由 CI 发布
