@@ -4,10 +4,16 @@
 - 方案依据见 [docs/design/editor-architecture.md](docs/design/editor-architecture.md)；改动公开 API、依赖、主题 token 或构建发布流程时同步更新该文档
 - 发版、changeset、npm / GitHub 发布配置相关的操作，先读 [docs/guide/release.md](docs/guide/release.md)
 
+## 仓库结构
+
+bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`packages/vue`（`@altmanlib/milkdown-kit-vue`）。根目录不发布，开发依赖、测试和 playground 都在根目录
+
 ## 硬性约束
 
 - 不得以运行时方式 import `@milkdown/crepe` 根入口，只能 import `@milkdown/crepe/builder` 和 `@milkdown/crepe/feature/*`，否则会把 KaTeX 等未启用的功能打进使用方的包
 - TypeScript 固定在 6.x：TypeScript 7 不提供 vue-tsc 需要的 API
+- 框架包只通过 `@altmanlib/milkdown-kit` 入口使用核心，不用相对路径引用 `packages/core` 的文件
+- workspace 内部依赖不用 `workspace:` 协议（`npm publish` 不会改写它）。`bun add` 会自动写成 `workspace:*`，按 release.md §3.2 处理
 - 用户可见的行为改动需要添加 changeset（`.changeset/*.md`）
 - 不在本地执行 `npm publish`；发布由 CI 完成，例外情况按 release.md §5 处理
 - `git push`、打 tag、创建 GitHub Release 只在仓库所有者明确同意后执行
@@ -24,5 +30,5 @@
 |---|---|
 | `bun run dev` | 启动 playground（`playground/`） |
 | `bun run check` | 类型检查、测试、文档检查 |
-| `bun run build` | 构建 JS（tsdown）和 CSS（`scripts/build-css.ts`） |
-| `bun run check:package` | 构建后运行 publint 和 attw |
+| `bun run build` | 依次构建核心包（tsdown + `packages/core/scripts/build-css.ts`）和 Vue 包 |
+| `bun run check:package` | 构建后对每个包运行 publint 和 attw |

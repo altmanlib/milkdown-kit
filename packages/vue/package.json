@@ -1,0 +1,44 @@
+{
+  "name": "@altmanlib/milkdown-kit-vue",
+  "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/altmanlib/milkdown-kit.git",
+    "directory": "packages/vue"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./style.css": "./style.css",
+    "./package.json": "./package.json"
+  },
+  "bugs": {
+    "url": "https://github.com/altmanlib/milkdown-kit/issues"
+  },
+  "description": "Vue 3 component for @altmanlib/milkdown-kit, an opinionated Markdown editor built on Milkdown Crepe",
+  "files": [
+    "dist",
+    "style.css"
+  ],
+  "homepage": "https://github.com/altmanlib/milkdown-kit#readme",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "dependencies": {
+    "@altmanlib/milkdown-kit": "^0.1.1"
+  }
+}

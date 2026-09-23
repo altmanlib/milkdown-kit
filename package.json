@@ -1,48 +1,5 @@
 {
-  "name": "@altmanlib/milkdown-kit",
-  "version": "0.1.1",
-  "description": "Opinionated Markdown editor built on Milkdown Crepe, with a Vue component",
-  "license": "MIT",
-  "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./vue": {
-      "types": "./dist/vue.d.ts",
-      "default": "./dist/vue.js"
-    },
-    "./style.css": "./dist/style.css",
-    "./package.json": "./package.json"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "dev": "vite --config playground/vite.config.ts",
-    "build": "tsdown && bun scripts/build-css.ts",
-    "typecheck": "vue-tsc --noEmit",
-    "test": "vitest run",
-    "check:docs": "bun scripts/check-docs.ts",
-    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css",
-    "release": "bun run build && changeset publish",
-    "check": "bun run typecheck && bun run test && bun run check:docs"
-  },
-  "dependencies": {
-    "@codemirror/language": "^6.10.1",
-    "@codemirror/language-data": "^6.3.1",
-    "@floating-ui/dom": "^1.5.1",
-    "@lezer/highlight": "^1.2.0",
-    "@milkdown/crepe": "~7.22.1",
-    "@milkdown/kit": "~7.22.1"
-  },
+  "name": "milkdown-kit-monorepo",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
     "@changesets/cli": "^3.0.3",
@@ -61,20 +18,20 @@
     "vue-tsc": "^3.3.11",
     "yaml": "^2.9.1"
   },
-  "peerDependenciesMeta": {
-    "vue": {
-      "optional": true
-    }
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vite --config playground/vite.config.ts",
+    "build": "bun run --filter @altmanlib/milkdown-kit build && bun run --filter @altmanlib/milkdown-kit-vue build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "check:docs": "bun scripts/check-docs.ts",
+    "check:package": "bun run --filter './packages/*' check:package",
+    "release": "bun run build && changeset publish",
+    "check": "bun run typecheck && bun run test && bun run check:docs"
   },
-  "peerDependencies": {
-    "vue": "^3.5.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/altmanlib/milkdown-kit.git"
-  },
-  "homepage": "https://github.com/altmanlib/milkdown-kit#readme",
-  "bugs": {
-    "url": "https://github.com/altmanlib/milkdown-kit/issues"
-  }
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ]
 }

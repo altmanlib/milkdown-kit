@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
 
-import { createEditor } from '../core/create-editor'
-import type { CodeBlockToolsMode, EditorHandle, FeatureName, Locale } from '../core/types'
+import {
+  type CodeBlockToolsMode,
+  createEditor,
+  type EditorHandle,
+  type FeatureName,
+  type Locale,
+} from '@altmanlib/milkdown-kit'
 
 export interface MdEditorProps {
   /** Markdown content, used with `v-model`. */

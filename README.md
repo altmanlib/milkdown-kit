@@ -1,18 +1,31 @@
-# @altmanlib/milkdown-kit
+# milkdown-kit
 
 基于 [Milkdown](https://milkdown.dev) Crepe 预配置好的 Markdown 编辑器：中文界面、紧凑主题、暗色模式、Vue 3 组件，开箱即用
 
-> 本包不是 Milkdown 官方包。官方包名是 `@milkdown/kit`，注意区分
+> 本项目不是 Milkdown 官方项目。官方包名是 `@milkdown/kit`，注意区分
 
 ![milkdown-kit editor](docs/assets/editor.png)
+
+## 包
+
+| 包 | 用途 |
+|---|---|
+| [`@altmanlib/milkdown-kit-vue`](packages/vue) | Vue 3 组件 |
+| [`@altmanlib/milkdown-kit`](packages/core) | 不依赖框架的核心 API 和样式；框架组件都基于它 |
+
+所有包使用同一个版本号
 
 ## 安装
 
 ```bash
+# Vue
+npm install @altmanlib/milkdown-kit-vue
+
+# Without a framework
 npm install @altmanlib/milkdown-kit
 ```
 
-使用 Vue 组件时，项目中需要有 `vue@^3.5`
+Vue 组件要求项目中已安装 `vue@^3.5`
 
 ## 使用
 
@@ -20,8 +33,8 @@ npm install @altmanlib/milkdown-kit
 
 ```vue
 <script setup lang="ts">
-import '@altmanlib/milkdown-kit/style.css'
-import { MdEditor } from '@altmanlib/milkdown-kit/vue'
+import '@altmanlib/milkdown-kit-vue/style.css'
+import { MdEditor } from '@altmanlib/milkdown-kit-vue'
 import { ref } from 'vue'
 
 const content = ref('# Hello')
@@ -59,11 +72,11 @@ await editor.destroy()
 
 ```vue
 <script setup lang="ts">
-import '@altmanlib/milkdown-kit/style.css'
+import '@altmanlib/milkdown-kit-vue/style.css'
 import { defineAsyncComponent, ref } from 'vue'
 
 const MdEditor = defineAsyncComponent(() =>
-  import('@altmanlib/milkdown-kit/vue').then((m) => m.MdEditor),
+  import('@altmanlib/milkdown-kit-vue').then((m) => m.MdEditor),
 )
 
 const content = ref('# Hello')
@@ -113,6 +126,10 @@ const content = ref('# Hello')
 
 - 只能在浏览器中运行。SSR 环境中可以 import，但要在客户端挂载（例如 Nuxt 的 `<ClientOnly>`）
 - 导出的 Markdown 会做少量格式规范化（例如列表符号统一为 `*`），内容不变
+
+## 开发
+
+项目文档见 [docs/](docs/README.md)
 
 ## License
 

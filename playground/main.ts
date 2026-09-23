@@ -1,4 +1,4 @@
-import '../src/theme/style.css'
+import '@altmanlib/milkdown-kit/style.css'
 
 import { createApp } from 'vue'
 

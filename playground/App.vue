@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 
-import { MdEditor } from '../src/vue'
+import { MdEditor } from '../packages/vue/src'
 
 const content = ref(`# milkdown-kit
 

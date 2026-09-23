@@ -1,0 +1,45 @@
+{
+  "name": "@altmanlib/milkdown-kit",
+  "version": "0.1.1",
+  "description": "Opinionated Markdown editor built on Milkdown Crepe: framework-agnostic core and styles",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown && bun scripts/build-css.ts",
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/altmanlib/milkdown-kit.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/altmanlib/milkdown-kit#readme",
+  "bugs": {
+    "url": "https://github.com/altmanlib/milkdown-kit/issues"
+  },
+  "dependencies": {
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/language-data": "^6.3.1",
+    "@floating-ui/dom": "^1.5.1",
+    "@lezer/highlight": "^1.2.0",
+    "@milkdown/crepe": "~7.22.1",
+    "@milkdown/kit": "~7.22.1"
+  }
+}

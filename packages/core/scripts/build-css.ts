@@ -8,15 +8,18 @@ import { bundleAsync } from 'lightningcss'
 const root = resolve(import.meta.dirname, '..')
 const entry = resolve(root, 'src/theme/style.css')
 const output = resolve(root, 'dist/style.css')
-const require = createRequire(entry)
 
 const { code } = await bundleAsync({
   filename: entry,
   minify: true,
   resolver: {
     read: (file) => readFile(file, 'utf8'),
+    // Resolve bare specifiers from the importing file: with isolated installs, transitive
+    // dependencies (e.g. @milkdown/prose imported by Crepe's CSS) are only visible there.
     resolve: (specifier, from) =>
-      specifier.startsWith('.') ? resolve(dirname(from), specifier) : require.resolve(specifier),
+      specifier.startsWith('.')
+        ? resolve(dirname(from), specifier)
+        : createRequire(from).resolve(specifier),
   },
 })
 

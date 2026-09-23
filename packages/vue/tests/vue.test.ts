@@ -2,8 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 
-import type { EditorHandle } from '../src'
-import { MdEditor } from '../src/vue'
+import { type EditorHandle, MdEditor } from '../src'
 
 async function waitForReady(wrapper: ReturnType<typeof mount>): Promise<EditorHandle> {
   for (let i = 0; i < 50; i++) {

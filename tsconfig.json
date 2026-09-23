@@ -11,7 +11,13 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "allowImportingTsExtensions": true,
+    "jsx": "preserve",
+    // Resolve workspace packages to their sources, so that typecheck and tests do not
+    // depend on a previous build. Keep in sync with `alias` in vitest.config.ts.
+    "paths": {
+      "@altmanlib/milkdown-kit": ["./packages/core/src/index.ts"]
+    }
   },
-  "include": ["src", "tests", "playground", "scripts", "*.ts", "src/**/*.vue", "playground/**/*.vue"]
+  "include": ["packages/*/src", "packages/*/tests", "packages/*/*.ts", "playground", "scripts", "*.ts"]
 }

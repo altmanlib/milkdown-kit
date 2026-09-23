@@ -13,8 +13,8 @@ updated: 2026-09-23
 
 | 项 | 结论 |
 |---|---|
-| 包名 | `@altmanlib/milkdown-kit` |
-| 交付物 | 一个 npm 包，包含：不依赖框架的核心接口、Vue 组件、样式文件 |
+| 包名 | `@altmanlib/milkdown-kit`（核心与样式）、`@altmanlib/milkdown-kit-vue`（Vue 组件） |
+| 交付物 | 同一仓库（monorepo）发布的多个 npm 包：不依赖框架的核心包，以及基于核心的框架组件包 |
 | 支持的框架 | Vue 3 |
 | 使用方 | 自有的其他前端项目 |
 | 「开箱即用」的含义 | 功能组合、中文文案、紧凑主题都已预设好，使用方只需提供挂载点和业务回调（例如图片上传） |
@@ -80,12 +80,12 @@ updated: 2026-09-23
 
 ### 4.2 包名
 
-**结论**：`@altmanlib/milkdown-kit`
+**结论**：核心包 `@altmanlib/milkdown-kit`，框架组件包 `@altmanlib/milkdown-kit-<框架>`（当前为 `@altmanlib/milkdown-kit-vue`）
 
 **理由**：
 
 - scope 和 GitHub 账号 `altmanlib` 一致，所有自有包可以放在同一个 scope 下
-- 包名和仓库名 `milkdown-kit` 一致，从包名就能看出底层是 Milkdown
+- 核心包名和仓库名 `milkdown-kit` 一致，从包名就能看出底层是 Milkdown；框架包加后缀，和上游 `@milkdown/vue` 的拆分方式一致
 
 **代价**：和官方的 `@milkdown/kit` 只差一个斜杠和连字符，安装时容易写错。README 开头注明本包不是官方包
 
@@ -94,23 +94,27 @@ updated: 2026-09-23
 ### 4.3 分层
 
 ```text
-src/
-  core/
-    create-editor.ts   createEditor() and EditorHandle
-    features.ts        Feature registry, imports Crepe feature subpaths only
-    image-markdown.ts  Workarounds for upstream image Markdown defects (§2.2)
-    types.ts           Public types
-  locale/              UI text presets, mapped onto Crepe feature configs
-  theme/
-    style.css          Entry: Crepe base styles + own layers below
-    tokens.css         Public design tokens, light and dark
-    content.css        Document density and block shapes
-    code.css           CodeMirror colors driven by tokens
-    overlays.css       Menus, toolbars, tooltips
-  vue/                 Vue component, depends on core only
+packages/
+  core/                  @altmanlib/milkdown-kit
+    src/
+      core/
+        create-editor.ts   createEditor() and EditorHandle
+        features.ts        Feature registry, imports Crepe feature subpaths only
+        image-markdown.ts  Workarounds for upstream image Markdown defects (§2.2)
+        types.ts           Public types
+      locale/              UI text presets, mapped onto Crepe feature configs
+      theme/
+        style.css          Entry: Crepe base styles + own layers below
+        tokens.css         Public design tokens, light and dark
+        content.css        Document density and block shapes
+        code.css           CodeMirror colors driven by tokens
+        overlays.css       Menus, toolbars, tooltips
+  vue/                   @altmanlib/milkdown-kit-vue, depends on the core package only
+    src/
+    style.css            Re-exports the core styles
 ```
 
-依赖方向只能是 `vue` → `core` → `@milkdown/crepe`。`locale` 只被 `core` 引用
+依赖方向只能是框架包 → 核心包 → `@milkdown/crepe`。框架包只通过核心包的公开入口（`@altmanlib/milkdown-kit`）使用核心，不引用核心的内部文件；框架包之间互不依赖。`locale` 只被 `core` 引用
 
 Vue 组件不使用 `@milkdown/vue`：核心已经负责编辑器的创建和销毁，组件直接调用 `createEditor()`，不需要再加一层上游的封装
 
@@ -177,6 +181,8 @@ declare function createEditor(
 
 ### 4.5 Vue 组件
 
+由 `@altmanlib/milkdown-kit-vue` 提供
+
 ```vue
 <MdEditor
   v-model="content"
@@ -197,26 +203,33 @@ declare function createEditor(
 | 实例访问 | 通过 `defineExpose({ editor })` 暴露 `EditorHandle`（未就绪时为 `null`），同时通过 `ready` 事件传出 |
 | 生命周期 | `onMounted` 时创建，`onBeforeUnmount` 时调用 `destroy()`；在编辑器就绪前卸载，就绪后立即销毁 |
 | 根节点 | `div.md-editor-host`，组件上的 `class` / `style` 落在这里 |
+| 类型 | 同时导出核心包的 `EditorHandle`、`FeatureName`、`Locale`、`CodeBlockToolsMode`，使用方不需要直接依赖核心包 |
 
 ### 4.6 包结构与导出
 
+每个包的导出结构相同：
+
 ```json
 {
-  "name": "@altmanlib/milkdown-kit",
   "type": "module",
   "sideEffects": ["**/*.css"],
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-    "./vue": { "types": "./dist/vue.d.ts", "default": "./dist/vue.js" },
-    "./style.css": "./dist/style.css",
+    "./style.css": "...",
     "./package.json": "./package.json"
   },
   "publishConfig": { "access": "public" }
 }
 ```
 
+| 包 | `./style.css` |
+|---|---|
+| `@altmanlib/milkdown-kit` | `./dist/style.css`，由 `scripts/build-css.ts` 构建的完整样式 |
+| `@altmanlib/milkdown-kit-vue` | `./style.css`，只有一行 `@import '@altmanlib/milkdown-kit/style.css'` |
+
 - 只输出 ESM，附带 `.d.ts`
 - 使用方要自己引入 `style.css`，JS 入口不自动注入样式
+- 框架包转发样式，是为了让使用方只依赖框架包：在 pnpm 等严格安装模式下，使用方不能直接 import 间接依赖。转发依赖打包工具解析 CSS 中的包名 `@import`（Vite 已实测，样本 1 次构建）
 - scope 包默认是私有的，公开发布必须设置 `publishConfig.access: public`
 - provenance 不在 `publishConfig` 中声明：通过 Trusted Publishing 从 GitHub Actions 发布时，npm 会自动生成
 
@@ -224,17 +237,17 @@ declare function createEditor(
 
 | 依赖 | 声明位置 | 版本范围 | 理由 |
 |---|---|---|---|
-| `@milkdown/crepe`、`@milkdown/kit` | `dependencies` | `~7.22.1` | 属于内部实现，锁到 patch 级别，保证整棵依赖树里 Milkdown 版本一致 |
-| `@codemirror/language`、`@codemirror/language-data`、`@lezer/highlight` | `dependencies` | 和 Crepe 的依赖范围一致 | 补上按需组合时缺失的语言列表和高亮（§4.4），和 Crepe 共用同一份安装 |
-| `@floating-ui/dom` | `dependencies` | 和 `@milkdown/plugin-slash` 的依赖范围一致 | 斜杠菜单的 `shift` / `size` middleware |
-| `vue` | `peerDependencies`，标为 optional | `^3.5.0` | 使用宿主项目的 Vue 实例。下限和 Crepe 依赖的 `vue ^3.5.20` 保持同一个 minor，避免宿主安装出两份 Vue |
-| `typescript` | `devDependencies` | `~6.0.3` | TypeScript 7 不提供 vue-tsc 需要的 API（§2.3） |
+| `@milkdown/crepe`、`@milkdown/kit` | 核心包 `dependencies` | `~7.22.1` | 属于内部实现，锁到 patch 级别，保证整棵依赖树里 Milkdown 版本一致 |
+| `@codemirror/language`、`@codemirror/language-data`、`@lezer/highlight` | 核心包 `dependencies` | 和 Crepe 的依赖范围一致 | 补上按需组合时缺失的语言列表和高亮（§4.4），和 Crepe 共用同一份安装 |
+| `@floating-ui/dom` | 核心包 `dependencies` | 和 `@milkdown/plugin-slash` 的依赖范围一致 | 斜杠菜单的 `shift` / `size` middleware |
+| `@altmanlib/milkdown-kit` | 框架包 `dependencies` | `^<当前版本>`，不用 `workspace:` 协议 | 见§4.9。版本号由 changesets 在发版时同步 |
+| `vue` | Vue 包 `peerDependencies` | `^3.5.0` | 使用宿主项目的 Vue 实例。下限和 Crepe 依赖的 `vue ^3.5.20` 保持同一个 minor，避免宿主安装出两份 Vue |
+| 构建、测试工具 | 根目录 `devDependencies` | — | 所有包共用一套工具链版本 |
+| `typescript` | 根目录 `devDependencies` | `~6.0.3` | TypeScript 7 不提供 vue-tsc 需要的 API（§2.3） |
 
-Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkdown/*`
+Milkdown 的升级由本项目统一跟进，使用方不需要直接安装 `@milkdown/*`
 
 依赖升级：npm 依赖每月手动检查，`@milkdown/crepe` 与 `@milkdown/kit` 必须同版本升级；GitHub Actions 版本由 Dependabot 管理。Dependabot 的 bun 更新器只支持 `bun.lock` 的 `lockfileVersion` 1（bun ≥ 1.4 写入 2），所以 npm 依赖暂不交给它。步骤与触发条件见 [release.md](../guide/release.md) §3
-
-`vue` 标为 optional peer，是因为只使用核心入口的项目不需要 Vue
 
 **TypeScript 升到 7 的触发条件**：vue-tsc 和 rolldown-plugin-dts 支持 TypeScript 7 的原生编译器，可以生成 `.vue` 组件的类型声明
 
@@ -262,23 +275,36 @@ Milkdown 的升级由本包统一跟进，使用方不需要直接安装 `@milkd
 
 | 项 | 结论 |
 |---|---|
+| 仓库形态 | monorepo，bun workspaces（`packages/*`）。根目录 `private: true`，不发布 |
 | 包管理 | bun |
-| JS 构建 | tsdown，Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成 |
-| CSS 构建 | `scripts/build-css.ts` 用 lightningcss 把 `@import` 内联成单个 `dist/style.css`。不用 tsdown 的 CSS 功能，它仍标为 experimental |
+| JS 构建 | 每个包各自用 tsdown 构建；Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成。框架包把核心包当作外部依赖，不打进产物。根目录 `bun run build` 先构建核心包，再构建框架包 |
+| CSS 构建 | 核心包的 `scripts/build-css.ts` 用 lightningcss 把 `@import` 内联成单个 `dist/style.css`。不用 tsdown 的 CSS 功能，它仍标为 experimental |
+| 源码解析 | 类型检查、测试和 playground 把 `@altmanlib/milkdown-kit` 指向核心包源码（`tsconfig.json` 的 `paths` 和 `workspace-alias.ts`），不需要先构建 |
 | 开发预览 | 仓库内的 `playground/`（Vite + Vue），只用于演示，不进入发布产物 |
-| 版本与 changelog | changesets，配置 `access: public` |
-| CI | `.github/workflows/ci.yml`：类型检查、测试、文档检查、构建、publint、attw，并把 gzip 体积写入 job summary |
+| 版本与 changelog | changesets，配置 `access: public`。所有包放在同一个 `fixed` 分组，始终使用同一个版本号；每个包有自己的 `CHANGELOG.md` |
+| CI | `.github/workflows/ci.yml`：类型检查、测试、文档检查、构建、每个包的 publint 和 attw，并把 gzip 体积写入 job summary |
 | 发布 | `.github/workflows/release.yml`：`changesets/action` 在有 changeset 时开「Version Packages」PR，合并后执行 `bun run release`，通过 npm Trusted Publishing 发布并自动生成 provenance。操作步骤见 [release.md](../guide/release.md) |
-| 仓库形态 | 单个包，不使用 monorepo |
 
-npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5.1、Node ≥ 22.14.0、GitHub 托管的 runner、job 权限包含 `id-token: write`；npmjs.com 上登记的 workflow 文件名必须和 `release.yml` 完全一致。私有仓库不生成 provenance；provenance 还要求 `package.json` 的 `repository` 和发布所在的公开仓库完全一致
+**结论**：多框架支持采用同一仓库的 monorepo，每个框架一个包
 
-**改用 monorepo 的触发条件**：增加第二个框架组件后，不同框架组件需要各自的版本节奏，或者 optional peer 让使用方安装时出现问题
+**理由**：
+
+- 框架包的 peer 依赖是必需的，不需要标为 optional；使用方只安装自己框架的包
+- 核心修改可以在一个 PR 里同时覆盖所有框架，工具链、CI 和文档只有一套
+- 上游 Milkdown、Tiptap、Floating UI 都采用这种结构（2026-09-23 通过 `npm view` 核对）
+
+**代价**：每个新包首次发布必须在本地手动完成，再登记 Trusted Publisher（见 [release.md](../guide/release.md) §5）
+
+**内部依赖不用 `workspace:` 协议**：changesets 在 bun 项目中用 `npm publish` 发布，而 npm 不会改写 `workspace:`，发布出去的包会无法安装。普通的 semver 范围在本地同样会链接到 workspace 包（bun 1.4.0 实测）。`bun add` 添加 workspace 包时会自动写成 `workspace:*`，需要手动改回，步骤见 [release.md](../guide/release.md) §3.2
+
+npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5.1、Node ≥ 22.14.0、GitHub 托管的 runner、job 权限包含 `id-token: write`；npmjs.com 上登记的 workflow 文件名必须和 `release.yml` 完全一致；要配置的包必须已经存在于 registry。私有仓库不生成 provenance；provenance 还要求 `package.json` 的 `repository` 和发布所在的公开仓库完全一致
+
+**各包改为独立版本号的触发条件**：某个框架包需要升 major，而其他框架的使用方不应该跟着升。届时把 `fixed` 改为 `linked` 或移除
 
 ## 5. 影响面
 
-- 使用方只依赖本包的公开 API（§4.4、§4.5）和 CSS token（§4.8），Milkdown 升级对使用方透明
-- 本包的 major 版本只在公开 API 或 CSS token 不兼容时升级，与 Milkdown 的版本号无关
+- 使用方只依赖各包的公开 API（§4.4、§4.5）和 CSS token（§4.8），Milkdown 升级对使用方透明
+- major 版本只在公开 API 或 CSS token 不兼容时升级，与 Milkdown 的版本号无关
 - `0.x` 阶段 API 允许不兼容变更，由 changesets 在 changelog 中写明
 - 升级 Milkdown 时，§2.2 的规避代码需要复查：上游修复后删除对应规避，往返测试保证行为不变
 
@@ -289,18 +315,20 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 | 往返 | vitest + happy-dom | 标题、行内标记、有序/无序/任务列表、引用、代码块、表格、分割线、中文、块级和行内图片（有无 title、有无 alt、缩放比例）；无 title 图片前后的内容不丢失 |
 | 核心 | vitest + happy-dom | 挂载与销毁、data 属性、`setMarkdown()` 不触发 `onChange`、用户编辑触发 `onChange`、只读切换、占位文案 |
 | 组件 | vitest + `@vue/test-utils` | 初始值与暴露的句柄、外部改值写入、自身发出的值不回写、只读响应、卸载时销毁、就绪前卸载 |
-| SSR | vitest（node 环境） | 在没有 DOM 的环境中 import 核心和 Vue 入口不报错 |
-| 包产物 | `publint`、`@arethetypeswrong/cli`（`--profile esm-only`，排除 `style.css`） | `exports` 和类型声明正确 |
+| SSR | vitest（node 环境） | 在没有 DOM 的环境中 import 各包入口不报错 |
+| 包产物 | 每个包运行 `publint`、`@arethetypeswrong/cli`（`--profile esm-only`，排除 `style.css`） | `exports` 和类型声明正确 |
+
+测试文件放在各包的 `tests/` 下，由根目录的一份 vitest 配置统一运行
 | 交互 | 在 playground 中手动验证 | 斜杠菜单、工具栏、代码语言选择、暗色、窄屏、关闭上传 |
 
-使用方冒烟测试：把 `bun pm pack` 打出的包安装到空的 Vite + Vue 项目，执行 `vue-tsc`（`skipLibCheck: false`）和 `vite build`，步骤见 [release.md](../guide/release.md) §2.2。2026-09-23 实测结果（样本 1 次构建）：
+使用方冒烟测试：把各包 `bun pm pack` 打出的 tgz 安装到空的 Vite + Vue 项目，执行 `vue-tsc`（`skipLibCheck: false`）和 `vite build`，步骤见 [release.md](../guide/release.md) §2.2。2026-09-23 实测结果（monorepo 结构，Vite 8.3.0，样本各 1 次构建）：
 
 | 产物 | gzip 体积 |
 |---|---|
-| 静态引入时的首屏 JS（含 Vue 运行时） | 363,394 字节 |
-| 用 `defineAsyncComponent` 按需加载时的首屏 JS（含 Vue 运行时） | 25,357 字节 |
-| 按需加载时的编辑器 chunk | 239,921 字节 |
-| CSS | 7,717 字节 |
+| 静态引入时的首屏 JS（含 Vue 运行时） | 363,105 字节 |
+| 用 `defineAsyncComponent` 按需加载时的首屏 JS（含 Vue 运行时） | 25,351 字节 |
+| 按需加载时的编辑器 chunk | 239,884 字节 |
+| CSS | 7,792 字节 |
 | 代码语言语法 | 按需懒加载，拆成独立 chunk |
 
 README 推荐使用方按需加载编辑器，包内不做额外的体积优化
@@ -328,7 +356,7 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | 项 | 触发条件 | 处理方式 |
 |---|---|---|
 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
-| React 组件 | 有 React 项目需要接入 | 新增 `./react` 导出，并按 §4.9 的触发条件评估是否改用 monorepo |
+| React 组件 | 有 React 项目需要接入 | 新增 `packages/react`（`@altmanlib/milkdown-kit-react`），加入 changesets 的 `fixed` 分组 |
 | 体积上限 | 使用方反馈加载性能问题 | 以 §6 的基线数据设定 gzip 上限，并在 CI 中卡住 |
 | 自动化 E2E | 交互层出现回归，或交互改动变得频繁 | 把 §6 的手动交互验证写成 playwright 用例，在 CI 中针对 playground 运行 |
 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
