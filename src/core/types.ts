@@ -25,7 +25,15 @@ export interface MdEditorOptions {
   features?: Partial<Record<FeatureName, boolean>>
   /** Defaults to `zh-CN`. */
   locale?: Locale
+  /**
+   * Visibility of the code block tools (language picker, copy button).
+   * `always` (default) keeps them visible; `hover` shows them on pointer hover only,
+   * except on devices without hover support, where they are always visible.
+   */
+  codeBlockTools?: CodeBlockToolsMode
 }
+
+export type CodeBlockToolsMode = 'always' | 'hover'
 
 export interface EditorHandle {
   getMarkdown(): string

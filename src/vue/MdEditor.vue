@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
 
 import { createEditor } from '../core/create-editor'
-import type { EditorHandle, FeatureName, Locale } from '../core/types'
+import type { CodeBlockToolsMode, EditorHandle, FeatureName, Locale } from '../core/types'
 
 export interface MdEditorProps {
   /** Markdown content, used with `v-model`. */
@@ -16,6 +16,8 @@ export interface MdEditorProps {
   features?: Partial<Record<FeatureName, boolean>>
   /** Creation-time only. */
   locale?: Locale
+  /** Creation-time only. Defaults to `always`. */
+  codeBlockTools?: CodeBlockToolsMode
 }
 
 const props = withDefaults(defineProps<MdEditorProps>(), {
@@ -44,6 +46,7 @@ onMounted(async () => {
     uploadImage: props.uploadImage,
     features: props.features,
     locale: props.locale,
+    codeBlockTools: props.codeBlockTools,
     onChange: (markdown) => {
       syncedValue = markdown
       emit('update:modelValue', markdown)

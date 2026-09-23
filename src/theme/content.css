@@ -121,6 +121,35 @@
   border-radius: var(--md-editor-radius-sm);
 }
 
+/* Code block tools: Crepe hides them until hover; keep them visible in `always` mode
+   and on devices that cannot hover. */
+.md-editor[data-code-tools='always'] .milkdown .milkdown-code-block .language-button,
+.md-editor[data-code-tools='always'] .milkdown .milkdown-code-block .tools-button-group > button {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .md-editor .milkdown .milkdown-code-block .language-button,
+  .md-editor .milkdown .milkdown-code-block .tools-button-group > button {
+    opacity: 1;
+  }
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .language-button,
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button {
+  color: var(--md-editor-color-muted);
+  transition: opacity 0.2s ease-in-out, color 0.15s, background-color 0.15s;
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .language-button:hover,
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button:hover {
+  color: var(--md-editor-color-on-surface);
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button svg {
+  fill: currentColor;
+}
+
 /* Table */
 .md-editor .milkdown .milkdown-table-block {
   margin: 6px 0;

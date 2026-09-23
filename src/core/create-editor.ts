@@ -8,6 +8,7 @@ import { replaceAll } from '@milkdown/kit/utils'
 
 import { getMessages } from '../locale'
 import { applyFeatures, type FeatureConfigs, resolveFeatures } from './features'
+import { applyImageMarkdownFixes } from './image-markdown'
 import type { EditorHandle, MdEditorOptions } from './types'
 
 export const ROOT_CLASS = 'md-editor'
@@ -44,6 +45,7 @@ export async function createEditor(
     uploadImage,
     features,
     locale = 'zh-CN',
+    codeBlockTools = 'always',
   } = options
 
   const messages = getMessages(locale)
@@ -53,6 +55,7 @@ export async function createEditor(
   const container = document.createElement('div')
   container.className = ROOT_CLASS
   container.dataset.upload = uploadImage ? 'enabled' : 'disabled'
+  container.dataset.codeTools = codeBlockTools
   root.appendChild(container)
 
   const imageBlockConfig: FeatureConfigs['image-block'] = uploadImage
@@ -84,6 +87,7 @@ export async function createEditor(
     'image-block': imageBlockConfig,
     'placeholder': { text: placeholder ?? messages.placeholder },
   })
+  applyImageMarkdownFixes(builder.editor, enabled['image-block'])
   builder.setReadonly(readonly)
   if (onChange) {
     builder.on((listener) => {
