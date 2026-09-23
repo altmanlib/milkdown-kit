@@ -33,5 +33,6 @@
   "type": "module",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "packageManager": "bun@1.4.2"
 }

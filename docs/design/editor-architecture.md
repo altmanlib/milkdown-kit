@@ -276,7 +276,7 @@ Milkdown 的升级由本项目统一跟进，使用方不需要直接安装 `@mi
 | 项 | 结论 |
 |---|---|
 | 仓库形态 | monorepo，bun workspaces（`packages/*`）。根目录 `private: true`，不发布 |
-| 包管理 | bun |
+| 包管理 | bun，版本由根目录 `package.json` 的 `packageManager` 固定；CI 中的 `setup-bun` 通过 `bun-version-file: package.json` 读取同一版本，保证本地和 CI 行为一致 |
 | JS 构建 | 每个包各自用 tsdown 构建；Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成。框架包把核心包当作外部依赖，不打进产物。根目录 `bun run build` 先构建核心包，再构建框架包 |
 | CSS 构建 | 核心包的 `scripts/build-css.ts` 用 lightningcss 把 `@import` 内联成单个 `dist/style.css`。不用 tsdown 的 CSS 功能，它仍标为 experimental |
 | 源码解析 | 类型检查、测试和 playground 把 `@altmanlib/milkdown-kit` 指向核心包源码（`tsconfig.json` 的 `paths` 和 `workspace-alias.ts`），不需要先构建 |

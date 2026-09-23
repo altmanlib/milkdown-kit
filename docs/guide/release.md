@@ -120,6 +120,7 @@ bun outdated
 | `@codemirror/*`、`@lezer/highlight`、`@floating-ui/dom` | 在 `packages/core` 中执行 `bun update <包名>`，保持 `^` 范围不变 | 只更新 `bun.lock` 时不需要；改动了范围时需要 |
 | 开发依赖 | 在根目录执行 `bun update <包名>` | 不需要 |
 | `typescript` | 保持 6.x，不升级到 7（设计文档 §2.3） | 不需要 |
+| bun 本身 | 本地 `bun upgrade`，再把根目录 `package.json` 的 `packageManager` 改为 `bun@<新版本>`（`npm pkg set packageManager=bun@<新版本>`），CI 会读取这个字段。升级后执行 `bun install` 和 `bun run check`，并检查 `bun.lock` 是否有变化 | 不需要 |
 
 **依赖 workspace 内的包**（例如新框架包依赖核心包）：不能使用 `workspace:` 协议（设计文档 §4.9）。`bun add` 会自动写成 `workspace:*`，而且之后直接修改 `package.json`，bun 不会更新 `bun.lock` 中已有的记录。正确做法是在该包目录中执行：
 
