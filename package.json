@@ -1,5 +1,5 @@
 {
-  "name": "@altmanlib/md-editor",
+  "name": "@altmanlib/milkdown-kit",
   "version": "0.0.0",
   "description": "Opinionated Markdown editor built on Milkdown Crepe, with a Vue component",
   "license": "MIT",
@@ -23,8 +23,7 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "scripts": {
     "dev": "vite --config playground/vite.config.ts",
@@ -32,7 +31,9 @@
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
     "check:docs": "bun scripts/check-docs.ts",
-    "check:package": "publint && attw --pack . --profile esm-only"
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css",
+    "release": "bun run build && changeset publish",
+    "check": "bun run typecheck && bun run test && bun run check:docs"
   },
   "dependencies": {
     "@codemirror/language": "^6.10.1",

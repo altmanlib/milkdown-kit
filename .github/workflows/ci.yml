@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun run build
+      - run: bun run check:package
+      - name: Bundle size baseline (gzip, not enforced)
+        run: |
+          for file in dist/*.js dist/style.css; do
+            printf '%-40s %8s bytes\n' "$file" "$(gzip -c "$file" | wc -c)"
+          done >> "$GITHUB_STEP_SUMMARY"
