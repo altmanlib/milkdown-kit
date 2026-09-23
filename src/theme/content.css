@@ -27,7 +27,14 @@
 .md-editor .milkdown .ProseMirror h5 { font-size: 1em; }
 .md-editor .milkdown .ProseMirror h6 { font-size: 0.925em; }
 
-.md-editor .milkdown .ProseMirror > :first-child {
+/* Widgets (virtual cursor, gap cursor, upload placeholder) come and go before the
+   first block, so :first-child would flip its margin and make the document jump.
+   Match the first non-widget child instead. The virtual cursor plugin overwrites
+   the .ProseMirror-widget class, so it is listed separately. */
+.md-editor .milkdown .ProseMirror
+  > :not(.ProseMirror-widget, .prosemirror-virtual-cursor):not(
+    :not(.ProseMirror-widget, .prosemirror-virtual-cursor) ~ *
+  ) {
   margin-top: 0;
 }
 
@@ -172,6 +179,25 @@
 }
 
 .md-editor .milkdown .milkdown-image-block .image-edit .confirm {
+  flex: none;
+  white-space: nowrap;
+  border-radius: var(--md-editor-radius-sm);
+}
+
+/* Crepe renders a preview of the typed link inside the input bar but ships no styles
+   for it, so the image overflows at its natural size. Keep it a thumbnail. */
+.md-editor .milkdown .image-edit .image-preview,
+.md-editor .milkdown .empty-image-inline .image-preview {
+  display: flex;
+  flex: none;
+  height: 24px;
+}
+
+.md-editor .milkdown .image-edit .image-preview img,
+.md-editor .milkdown .empty-image-inline .image-preview img {
+  height: 100%;
+  max-width: 48px;
+  object-fit: cover;
   border-radius: var(--md-editor-radius-sm);
 }
 
