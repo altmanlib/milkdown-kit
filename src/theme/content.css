@@ -1,0 +1,168 @@
+/* Document content: compact density and block shapes. */
+.md-editor .milkdown .ProseMirror {
+  padding: var(--md-editor-padding);
+}
+
+.md-editor .milkdown .ProseMirror p {
+  line-height: var(--md-editor-line-height);
+  padding: 2px 0;
+}
+
+.md-editor .milkdown .ProseMirror h1,
+.md-editor .milkdown .ProseMirror h2,
+.md-editor .milkdown .ProseMirror h3,
+.md-editor .milkdown .ProseMirror h4,
+.md-editor .milkdown .ProseMirror h5,
+.md-editor .milkdown .ProseMirror h6 {
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.md-editor .milkdown .ProseMirror h1 { font-size: 1.75em; margin-top: 16px; }
+.md-editor .milkdown .ProseMirror h2 { font-size: 1.45em; margin-top: 14px; }
+.md-editor .milkdown .ProseMirror h3 { font-size: 1.25em; }
+.md-editor .milkdown .ProseMirror h4 { font-size: 1.1em; }
+.md-editor .milkdown .ProseMirror h5 { font-size: 1em; }
+.md-editor .milkdown .ProseMirror h6 { font-size: 0.925em; }
+
+.md-editor .milkdown .ProseMirror > :first-child {
+  margin-top: 0;
+}
+
+.md-editor .milkdown .ProseMirror code {
+  border-radius: var(--md-editor-radius-sm);
+  padding: 0 4px;
+}
+
+.md-editor .milkdown .ProseMirror blockquote {
+  padding-left: 16px;
+}
+
+.md-editor .milkdown .ProseMirror blockquote::before {
+  width: 3px;
+  background: var(--md-editor-color-border);
+}
+
+.md-editor .milkdown .ProseMirror hr {
+  padding: 4px 0;
+  height: 9px;
+  background-color: var(--md-editor-color-border);
+}
+
+/* Block handle */
+.md-editor .milkdown .milkdown-block-handle .operation-item {
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  border-radius: var(--md-editor-radius-sm);
+}
+
+.md-editor .milkdown .milkdown-block-handle .operation-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.md-editor .milkdown .milkdown-block-handle .operation-item.active {
+  background: var(--md-editor-color-active);
+}
+
+/* Lists */
+.md-editor .milkdown .milkdown-list-item-block li {
+  gap: 6px;
+}
+
+.md-editor .milkdown .milkdown-list-item-block li .label-wrapper {
+  height: calc(var(--md-editor-font-size) * var(--md-editor-line-height) + 4px);
+}
+
+.md-editor .milkdown .milkdown-list-item-block li .label-wrapper .label {
+  height: auto;
+  padding: 0;
+}
+
+.md-editor .milkdown .milkdown-list-item-block li .label-wrapper svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Code block */
+.md-editor .milkdown .milkdown-code-block {
+  padding: 4px 16px 12px;
+  margin: 6px 0;
+  border: 1px solid var(--md-editor-color-divider);
+  border-radius: var(--md-editor-radius-md);
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .language-button {
+  margin-bottom: 4px;
+  padding: 1px 2px 1px 6px;
+  border-radius: var(--md-editor-radius-sm);
+  background: transparent;
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .language-button:hover {
+  background: var(--md-editor-color-hover);
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button {
+  padding: 2px 8px;
+  border-radius: var(--md-editor-radius-sm);
+  background: transparent;
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button:hover {
+  background: var(--md-editor-color-hover);
+}
+
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button:first-child,
+.md-editor .milkdown .milkdown-code-block .tools .tools-button-group button:last-child {
+  border-radius: var(--md-editor-radius-sm);
+}
+
+/* Table */
+.md-editor .milkdown .milkdown-table-block {
+  margin: 6px 0;
+}
+
+.md-editor .milkdown .milkdown-table-block th,
+.md-editor .milkdown .milkdown-table-block td {
+  padding: 2px 10px;
+  border-color: var(--md-editor-color-border);
+}
+
+.md-editor .milkdown .milkdown-table-block th {
+  background: var(--md-editor-color-surface);
+}
+
+/* Image */
+.md-editor .milkdown .milkdown-image-block .image-edit {
+  border: 1px dashed var(--md-editor-color-border);
+  border-radius: var(--md-editor-radius-md);
+}
+
+.md-editor .milkdown .milkdown-image-block .image-edit .confirm {
+  border-radius: var(--md-editor-radius-sm);
+}
+
+.md-editor .milkdown .milkdown-image-inline .empty-image-inline,
+.md-editor .milkdown .milkdown-image-inline .empty-image-inline .confirm {
+  border-radius: var(--md-editor-radius-md);
+}
+
+@media (max-width: 480px) {
+  /* The hover-driven block handle is of little use on touch screens; reclaim its space. */
+  .md-editor {
+    --md-editor-padding: 12px 16px;
+  }
+
+  .md-editor .milkdown .milkdown-block-handle {
+    display: none;
+  }
+}
+
+/* Without `uploadImage`, images can only be inserted by URL. */
+.md-editor[data-upload='disabled'] .uploader {
+  display: none !important;
+}

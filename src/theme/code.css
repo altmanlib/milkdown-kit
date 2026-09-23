@@ -1,0 +1,111 @@
+/* CodeMirror inside code blocks. Syntax colors come from tok-* classes (classHighlighter). */
+.md-editor .milkdown .milkdown-code-block .cm-editor {
+  color: var(--md-editor-color-on-surface);
+  font-size: calc(var(--md-editor-font-size) * 0.875);
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-scroller {
+  font-family: var(--md-editor-font-code);
+  line-height: 1.6;
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-gutters {
+  color: var(--md-editor-color-muted);
+  border-right: none;
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-activeLine,
+.md-editor .milkdown .milkdown-code-block .cm-activeLineGutter {
+  background: transparent;
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-editor.cm-focused .cm-activeLine,
+.md-editor .milkdown .milkdown-code-block .cm-editor.cm-focused .cm-activeLineGutter {
+  background: var(--md-editor-color-hover);
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-cursor {
+  border-left-color: var(--md-editor-color-on-surface);
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-selectionBackground,
+.md-editor .milkdown .milkdown-code-block .cm-editor.cm-focused .cm-selectionBackground {
+  background: var(--md-editor-color-selected);
+}
+
+.md-editor .milkdown .milkdown-code-block .cm-matchingBracket {
+  background: var(--md-editor-color-active);
+  outline: none;
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-keyword,
+.md-editor .milkdown .milkdown-code-block .tok-operatorKeyword,
+.md-editor .milkdown .milkdown-code-block .tok-controlKeyword,
+.md-editor .milkdown .milkdown-code-block .tok-definitionKeyword,
+.md-editor .milkdown .milkdown-code-block .tok-moduleKeyword,
+.md-editor .milkdown .milkdown-code-block .tok-modifier {
+  color: var(--md-editor-code-keyword);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-string,
+.md-editor .milkdown .milkdown-code-block .tok-string2,
+.md-editor .milkdown .milkdown-code-block .tok-regexp,
+.md-editor .milkdown .milkdown-code-block .tok-url {
+  color: var(--md-editor-code-string);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-number,
+.md-editor .milkdown .milkdown-code-block .tok-bool,
+.md-editor .milkdown .milkdown-code-block .tok-atom,
+.md-editor .milkdown .milkdown-code-block .tok-literal {
+  color: var(--md-editor-code-number);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-comment {
+  color: var(--md-editor-code-comment);
+  font-style: italic;
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-variableName.tok-definition,
+.md-editor .milkdown .milkdown-code-block .tok-function,
+.md-editor .milkdown .milkdown-code-block .tok-macroName {
+  color: var(--md-editor-code-function);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-typeName,
+.md-editor .milkdown .milkdown-code-block .tok-className,
+.md-editor .milkdown .milkdown-code-block .tok-namespace {
+  color: var(--md-editor-code-type);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-propertyName,
+.md-editor .milkdown .milkdown-code-block .tok-attributeName {
+  color: var(--md-editor-code-property);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-meta,
+.md-editor .milkdown .milkdown-code-block .tok-punctuation {
+  color: var(--md-editor-code-meta);
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-heading,
+.md-editor .milkdown .milkdown-code-block .tok-strong {
+  font-weight: 600;
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-emphasis {
+  font-style: italic;
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-link {
+  text-decoration: underline;
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-inserted {
+  color: #1a7f37;
+}
+
+.md-editor .milkdown .milkdown-code-block .tok-deleted,
+.md-editor .milkdown .milkdown-code-block .tok-invalid {
+  color: var(--md-editor-color-error);
+}

@@ -1,0 +1,132 @@
+/*
+ * Public design tokens. Override any --md-editor-* variable on .md-editor or an ancestor.
+ *
+ * Radius scale (nested radius = outer radius - inner padding):
+ *   sm  inline code, tags, small inline buttons
+ *   md  blocks (code, image) and items inside overlays
+ *   lg  overlays (menus, toolbars, tooltips)
+ */
+.md-editor {
+  /* Color */
+  --md-editor-color-background: #ffffff;
+  --md-editor-color-on-background: #1f2328;
+  --md-editor-color-surface: #f6f8fa;
+  --md-editor-color-surface-low: #eff2f5;
+  --md-editor-color-on-surface: #1f2328;
+  --md-editor-color-on-surface-variant: #59636e;
+  --md-editor-color-muted: #818b98;
+  --md-editor-color-primary: #0969da;
+  --md-editor-color-secondary: #ddf4ff;
+  --md-editor-color-on-secondary: #0a3069;
+  --md-editor-color-inverse: #25292e;
+  --md-editor-color-on-inverse: #f6f8fa;
+  --md-editor-color-inline-code: #cf222e;
+  --md-editor-color-error: #cf222e;
+  --md-editor-color-hover: rgba(31, 35, 40, 0.05);
+  --md-editor-color-active: rgba(31, 35, 40, 0.09);
+  --md-editor-color-selected: rgba(9, 105, 218, 0.14);
+  --md-editor-color-inline-area: rgba(31, 35, 40, 0.06);
+  --md-editor-color-border: rgba(31, 35, 40, 0.12);
+  --md-editor-color-divider: rgba(31, 35, 40, 0.08);
+  --md-editor-color-overlay: #ffffff;
+
+  /* Code syntax */
+  --md-editor-code-keyword: #cf222e;
+  --md-editor-code-string: #0a3069;
+  --md-editor-code-number: #0550ae;
+  --md-editor-code-comment: #6e7781;
+  --md-editor-code-function: #8250df;
+  --md-editor-code-type: #953800;
+  --md-editor-code-property: #0550ae;
+  --md-editor-code-meta: #57606a;
+
+  /* Shape */
+  --md-editor-radius-sm: 4px;
+  --md-editor-radius-md: 6px;
+  --md-editor-radius-lg: 10px;
+
+  /* Elevation: a hairline plus two soft layers reads crisper than one heavy blur. */
+  --md-editor-shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.06);
+  --md-editor-shadow-overlay:
+    0 1px 2px rgba(31, 35, 40, 0.04),
+    0 4px 8px -2px rgba(31, 35, 40, 0.06),
+    0 12px 28px -6px rgba(31, 35, 40, 0.14);
+
+  /* Typography */
+  --md-editor-font-size: 15px;
+  --md-editor-line-height: 1.6;
+  --md-editor-font-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  --md-editor-font-title: var(--md-editor-font-default);
+  --md-editor-font-code: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+
+  /* Layout. Left padding reserves room for the block handle (2 x 24px + 8px offset). */
+  --md-editor-padding: 20px 32px 20px 64px;
+}
+
+[data-theme='dark'] .md-editor {
+  --md-editor-color-background: #0d1117;
+  --md-editor-color-on-background: #e6edf3;
+  --md-editor-color-surface: #151b23;
+  --md-editor-color-surface-low: #1c2129;
+  --md-editor-color-on-surface: #e6edf3;
+  --md-editor-color-on-surface-variant: #9198a1;
+  --md-editor-color-muted: #7d8590;
+  --md-editor-color-primary: #4493f8;
+  --md-editor-color-secondary: #1f3a5f;
+  --md-editor-color-on-secondary: #cae8ff;
+  --md-editor-color-inverse: #e6edf3;
+  --md-editor-color-on-inverse: #151b23;
+  --md-editor-color-inline-code: #ff7b72;
+  --md-editor-color-error: #ff7b72;
+  --md-editor-color-hover: rgba(240, 246, 252, 0.06);
+  --md-editor-color-active: rgba(240, 246, 252, 0.1);
+  --md-editor-color-selected: rgba(68, 147, 248, 0.24);
+  --md-editor-color-inline-area: rgba(240, 246, 252, 0.08);
+  --md-editor-color-border: rgba(240, 246, 252, 0.12);
+  --md-editor-color-divider: rgba(240, 246, 252, 0.08);
+  --md-editor-color-overlay: #1c2129;
+
+  --md-editor-code-keyword: #ff7b72;
+  --md-editor-code-string: #a5d6ff;
+  --md-editor-code-number: #79c0ff;
+  --md-editor-code-comment: #8b949e;
+  --md-editor-code-function: #d2a8ff;
+  --md-editor-code-type: #ffa657;
+  --md-editor-code-property: #79c0ff;
+  --md-editor-code-meta: #9198a1;
+
+  --md-editor-shadow-sm: 0 1px 2px rgba(1, 4, 9, 0.4);
+  --md-editor-shadow-overlay:
+    0 1px 2px rgba(1, 4, 9, 0.3),
+    0 8px 24px -4px rgba(1, 4, 9, 0.6);
+}
+
+/* Map public tokens onto Crepe's internal variables. */
+.md-editor .milkdown {
+  --crepe-color-background: var(--md-editor-color-background);
+  --crepe-color-on-background: var(--md-editor-color-on-background);
+  --crepe-color-surface: var(--md-editor-color-surface);
+  --crepe-color-surface-low: var(--md-editor-color-surface-low);
+  --crepe-color-on-surface: var(--md-editor-color-on-surface);
+  --crepe-color-on-surface-variant: var(--md-editor-color-on-surface-variant);
+  --crepe-color-outline: var(--md-editor-color-muted);
+  --crepe-color-primary: var(--md-editor-color-primary);
+  --crepe-color-secondary: var(--md-editor-color-secondary);
+  --crepe-color-on-secondary: var(--md-editor-color-on-secondary);
+  --crepe-color-inverse: var(--md-editor-color-inverse);
+  --crepe-color-on-inverse: var(--md-editor-color-on-inverse);
+  --crepe-color-inline-code: var(--md-editor-color-inline-code);
+  --crepe-color-error: var(--md-editor-color-error);
+  --crepe-color-hover: var(--md-editor-color-hover);
+  --crepe-color-selected: var(--md-editor-color-selected);
+  --crepe-color-inline-area: var(--md-editor-color-inline-area);
+
+  --crepe-base-font-size: var(--md-editor-font-size);
+  --crepe-font-default: var(--md-editor-font-default);
+  --crepe-font-title: var(--md-editor-font-title);
+  --crepe-font-code: var(--md-editor-font-code);
+
+  --crepe-shadow-1: var(--md-editor-shadow-overlay);
+  --crepe-shadow-2: var(--md-editor-shadow-overlay);
+}
