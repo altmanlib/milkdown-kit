@@ -85,7 +85,7 @@ npm view @altmanlib/milkdown-kit version
 ```
 
 - npm 包页面显示新版本，版本旁边有 provenance 标识
-- GitHub 上有 `@altmanlib/milkdown-kit@<version>` 的 tag 和 Release
+- GitHub 上有 `v<version>` 的 tag 和 Release（单包仓库，changesets 使用这个格式）
 
 新发布的版本在 registry 上可能有几十秒的延迟，期间 `npm view` 返回 404 属于正常现象
 
@@ -116,7 +116,7 @@ Dependabot（`.github/dependabot.yml`）每月按分组提 PR。Dependabot 的 P
 | 发布时报 `ENEEDAUTH` 或 404 | Trusted Publisher 配置和实际不一致 | 在 npm 包页 Settings → Trusted Publisher 核对仓库名和 workflow 文件名（区分大小写，含 `.yml`）；修改 `release.yml` 的文件名后必须同步修改这里 |
 | 发布只进入 staged，没有正式发布 | Trusted Publisher 缺少 `npm publish` 权限 | 编辑连接，勾选「Allow npm publish」。新建连接时这一项默认**不勾选** |
 | provenance 生成失败 | `package.json` 的 `repository` 和仓库不一致，或仓库改为私有 | 修正 `repository` 字段；私有仓库不生成 provenance |
-| `0.1.0` 没有 git tag 和 GitHub Release，也没有 provenance | 该版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
+| `0.1.0` 在 npm 上没有 provenance 标识 | 该版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
 
 ## 5. 手动发布（仅在 CI 无法使用时）
 
@@ -135,7 +135,7 @@ script -q /tmp/npm-publish.log npm publish --auth-type=web
 
 从 `/tmp/npm-publish.log` 中取出 `https://www.npmjs.com/auth/cli/...` 链接，在浏览器中完成验证；输出 `+ @altmanlib/milkdown-kit@<version>` 即为成功
 
-手动发布的版本没有 provenance，也不会自动创建 git tag 和 GitHub Release
+手动发布的版本没有 provenance，也不会自动创建 git tag 和 GitHub Release；需要时用 `gh release create v<version> --target <发版提交>` 补建
 
 ## 6. 撤回有问题的版本
 
