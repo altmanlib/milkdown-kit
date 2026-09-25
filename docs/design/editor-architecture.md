@@ -362,6 +362,7 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 - 不支持 SSR 渲染编辑器；只保证在 SSR 环境中 import 时不报错
 - 不做协同编辑（Yjs）
 - 不输出 CJS
+- 不支持 React 18：React 包只支持 React 19，`ref` 依赖 React 19 的普通 prop 传递
 
 ## 9. 开放项
 
@@ -372,4 +373,3 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | R05 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
 | R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
 | R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |
-| R13 | React 18 支持 | 有接入项目停留在 React 18 | peer 依赖放宽到 `^18.0.0 \|\| ^19.0.0`（兼容变更）。`ref` 在 React 18 中不是普通 prop，需要改用 `forwardRef`；并在 CI 中加入 React 18 的测试 |
