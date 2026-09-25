@@ -176,5 +176,5 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 | 项 | 用途 |
 |---|---|
 | `.md-editor` 上的 `data-upload`、`data-code-tools` 属性 | 把 `uploadImage` 和 `codeBlockTools` 传给 CSS |
-| `--md-editor-menu-max-height`、`--md-editor-menu-available-height` | 斜杠菜单的高度上限和视口可用高度，由样式和定位逻辑内部设置 |
+| `--md-editor-internal-*` 变量（例如斜杠菜单的高度上限和视口可用高度） | 由样式和定位逻辑内部设置和读取。带 `internal` 的名字不属于公开 token |
 | `.milkdown` 及其内部类名、`--crepe-*` 变量 | Crepe 的实现，随 Milkdown 升级变化 |

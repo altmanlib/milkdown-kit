@@ -16,12 +16,12 @@
 
 /* Slash menu: compact and bounded by the viewport (see slashMenuMiddleware). */
 .md-editor .milkdown .milkdown-slash-menu {
-  --md-editor-menu-max-height: 360px;
+  --md-editor-internal-menu-max-height: 360px;
   width: 220px;
   max-width: calc(100vw - 16px);
   max-height: min(
-    var(--md-editor-menu-max-height),
-    var(--md-editor-menu-available-height, var(--md-editor-menu-max-height))
+    var(--md-editor-internal-menu-max-height),
+    var(--md-editor-internal-menu-available-height, var(--md-editor-internal-menu-max-height))
   );
   overflow: hidden;
 }
@@ -205,7 +205,7 @@
 /* Narrow screens: drop the tab row; the list itself is short enough to scroll. */
 @media (max-width: 480px) {
   .md-editor .milkdown .milkdown-slash-menu {
-    --md-editor-menu-max-height: 280px;
+    --md-editor-internal-menu-max-height: 280px;
     width: 200px;
   }
 
