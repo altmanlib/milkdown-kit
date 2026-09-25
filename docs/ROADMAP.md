@@ -22,7 +22,7 @@ updated: 2026-09-25
 
 ## 2. 当前状态
 
-当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 与 React 包 `@altmanlib/milkdown-kit-react` 提供各自的 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](design/editor-architecture.md)
+当前版本 0.3.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 与 React 包 `@altmanlib/milkdown-kit-react` 提供各自的 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](design/editor-architecture.md)
 
 `0.x` 阶段允许不兼容变更（[editor-architecture.md](design/editor-architecture.md) §5）。1.0 表示对外 API 和 CSS token（[api.md](reference/api.md)）稳定，之后不兼容变更只进 major
 

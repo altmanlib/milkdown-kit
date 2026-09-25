@@ -17,10 +17,10 @@ updated: 2026-09-25
 
 | 项 | 现状 |
 |---|---|
-| npm 包 | `@altmanlib/milkdown-kit`（`packages/core`）、`@altmanlib/milkdown-kit-vue`（`packages/vue`）已发布；`@altmanlib/milkdown-kit-react`（`packages/react`）待按 §5.1 完成首次发布 |
+| npm 包 | `@altmanlib/milkdown-kit`（`packages/core`）、`@altmanlib/milkdown-kit-vue`（`packages/vue`）、`@altmanlib/milkdown-kit-react`（`packages/react`）均已发布 |
 | npm 账号 | 用户 `altmanlib`（`@altmanlib` 是它的个人 scope），已开 2FA（安全密钥），已关联 GitHub `@altmanlib`，邮箱已验证 |
 | GitHub 仓库 | `altmanlib/milkdown-kit`，public，默认分支 `main` |
-| Trusted Publisher | 每个包单独配置。仓库 `altmanlib/milkdown-kit`，workflow `release.yml`，无 environment，权限 `npm publish` + `npm stage publish`。core 与 vue 已配置；react 在首次手动发布后配置 |
+| Trusted Publisher | 每个包单独配置。仓库 `altmanlib/milkdown-kit`，workflow `release.yml`，无 environment，权限 `npm publish` + `npm stage publish`。三个包均已配置 |
 | npm Publishing access | 每个包单独配置。Require two-factor authentication and disallow bypass 2fa tokens：任何 token 都不能绕过 2FA 发布，CI 只能通过 Trusted Publisher 发布 |
 | GitHub Actions 设置 | 已开启「Allow GitHub Actions to create and approve pull requests」，否则 Release workflow 无法创建「Version Packages」PR |
 | 各包 `package.json` | `repository.url` 为 `git+https://github.com/altmanlib/milkdown-kit.git`，provenance 要求它和发布所在仓库完全一致；`repository.directory` 指向包所在目录 |
@@ -149,8 +149,10 @@ bun install
 | 发布时报 `ENEEDAUTH` 或 404 | Trusted Publisher 配置和实际不一致 | 在 npm 包页 Settings → Trusted Publisher 核对仓库名和 workflow 文件名（区分大小写，含 `.yml`）；修改 `release.yml` 的文件名后必须同步修改这里 |
 | 发布只进入 staged，没有正式发布 | Trusted Publisher 缺少 `npm publish` 权限 | 编辑连接，勾选「Allow npm publish」。新建连接时这一项默认**不勾选** |
 | provenance 生成失败 | `package.json` 的 `repository` 和仓库不一致，或仓库改为私有 | 修正 `repository` 字段；私有仓库不生成 provenance |
-| `@altmanlib/milkdown-kit@0.1.0`、`@altmanlib/milkdown-kit-vue@0.2.0` 在 npm 上没有 provenance 标识 | 这两个版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
+| `@altmanlib/milkdown-kit@0.1.0`、`@altmanlib/milkdown-kit-vue@0.2.0`、`@altmanlib/milkdown-kit-react@0.3.0` 在 npm 上没有 provenance 标识 | 这些版本由本地手动发布 | 无需处理；经 CI 发布的版本都有 |
 | `bun.lock` 的 `workspaces` 段中，包名、版本号或内部依赖范围和 `package.json` 不一致 | bun 的缺陷（[oven-sh/bun#18906](https://github.com/oven-sh/bun/issues/18906)）。bun ≥ 1.4.1 执行 `bun install` 时会同步版本号，但根包名和内部依赖范围仍不同步（1.4.2 实测）；`changeset version` 之后也不会自动更新 lockfile | 不影响安装和发布：`--frozen-lockfile` 不检查这些字段，发布内容来自各包的 `package.json`（1.4.0 和 1.4.2 实测）。需要同步时删除 `bun.lock` 后执行 `bun install`，并确认 diff 只涉及 `workspaces` 段；如果 `packages` 段也有变化，说明依赖解析结果变了，要逐项检查 |
+| Release 报 `State cannot be changed. The changeset-release/main branch was force-pushed or recreated`，「Version Packages」PR 被关闭 | `changeset-release/main` 分支被手动删除，GitHub 随之关闭了 PR | 重新运行 Release，它会新开一个「Version Packages」PR。清理分支时保留 `changeset-release/main` |
+| Release 报 `Some packages failed to publish`，新包 `E404 Not Found - PUT`，其余包已发布 | 新包还没按 §5.1 手动首次发布，就合并了「Version Packages」PR（0.3.0 实测） | 已发布的包无法撤回。按 §5 手动发布新包，再补建它的 tag 和 GitHub Release；Release 的这次失败无需重跑 |
 | 「Version Packages」PR 上的 CI 显示 `action_required`，合并后变为 `failure` 且没有任何 job | GitHub 不会自动运行由 bot 创建的 PR 的 workflow | 该 PR 只改动版本号和 CHANGELOG，以 `main` 上对应提交的 CI 结果为准；手动发布前在本地跑一遍 §2.2 的检查 |
 
 ## 5. 手动发布
