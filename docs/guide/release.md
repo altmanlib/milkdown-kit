@@ -9,7 +9,7 @@ updated: 2026-09-25
 
 各包通过 changesets 管理版本，由 GitHub Actions 通过 npm Trusted Publishing 发布。**正常发版不需要在本地登录 npm，也不需要在本地执行 `npm publish`**。例外是新包的首次发布（§5.1）
 
-方案层面的取舍见 [editor-architecture.md](../design/editor-architecture.md) §4.9
+方案见 [editor-architecture.md](../design/editor-architecture.md) §4.9
 
 ## 1. 账号与配置现状
 

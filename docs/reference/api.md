@@ -7,7 +7,7 @@ updated: 2026-09-25
 
 # 对外 API
 
-本文列出各包对使用方公开的全部内容：JS 导出、框架组件、样式入口、CSS token 和 DOM 约定。未列在这里的都属于内部实现，可能随时变化。各项的取舍见 [editor-architecture.md](../design/editor-architecture.md) §4
+本文列出各包对使用方公开的全部内容：JS 导出、框架组件、样式入口、CSS token 和 DOM 约定。未列在这里的都属于内部实现，可能随时变化，包括名字带 `internal` 的 CSS 变量。各项的方案见 [editor-architecture.md](../design/editor-architecture.md) §4
 
 ## 1. 导出清单
 
@@ -96,7 +96,7 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 | `onChange` | `(markdown: string) => void` | — | 否 | 用户编辑后触发，200ms 防抖 |
 | `readonly` | `boolean` | `false` | 否 | 变化时调用 `setReadonly()` |
 | `onReady` | `(editor: EditorHandle) => void` | — | 否 | 编辑器就绪后调用一次，此时 `ref` 已指向编辑器 |
-| `ref` | `Ref<EditorHandle \| null>` | — | 否 | 普通 prop，不需要 `forwardRef`。就绪前为 `null`，卸载后恢复为 `null` |
+| `ref` | `Ref<EditorHandle \| null>` | — | 否 | 普通 prop。就绪前为 `null`，卸载后恢复为 `null` |
 | `className`、`style` | `string`、`CSSProperties` | — | 否 | 设置在 `div.md-editor-host` 上 |
 | `placeholder`、`uploadImage`、`features`、`locale`、`codeBlockTools` | 同 `MdEditorOptions` | 同 `MdEditorOptions` | 是 | 同 `MdEditorOptions` |
 
@@ -160,16 +160,6 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 
 | 项 | 约定 |
 |---|---|
-| 暗色模式 | `.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"`；不跟随 `prefers-color-scheme` |
+| 暗色模式 | `.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"` |
 | token 作用范围 | 定义在 `.md-editor` 上；`.md-editor-host` 读不到 |
 | 外层样式 | 编辑器不带外框、圆角和最小高度；外层不能用 `overflow: hidden`，否则弹层会被裁掉 |
-
-## 7. 不属于公开 API 的内容
-
-以下内容可以在 DOM 或 CSS 中看到，但使用方不应依赖：
-
-| 项 | 用途 |
-|---|---|
-| `.md-editor` 上的 `data-upload`、`data-code-tools` 属性 | 把 `uploadImage` 和 `codeBlockTools` 传给 CSS |
-| `--md-editor-internal-*` 变量（例如斜杠菜单的高度上限和视口可用高度） | 由样式和定位逻辑内部设置和读取。带 `internal` 的名字不属于公开 token |
-| `.milkdown` 及其内部类名、`--crepe-*` 变量 | Crepe 的实现，随 Milkdown 升级变化 |
