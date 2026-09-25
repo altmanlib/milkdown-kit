@@ -49,7 +49,7 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 
 | 类型 | 取值 |
 |---|---|
-| `FeatureName` | `'code-mirror'`、`'list-item'`、`'link-tooltip'`、`'cursor'`、`'image-block'`、`'block-edit'`、`'toolbar'`、`'placeholder'`、`'table'` |
+| `FeatureName` | `'toolbar'`、`'block-menu'`、`'code-block'`、`'image-block'`、`'table'`、`'link-tooltip'`、`'placeholder'`，含义见 [editor-architecture.md](../design/editor-architecture.md) §4.4 |
 | `Locale` | `'zh-CN'`、`'en'` |
 | `CodeBlockToolsMode` | `'always'`、`'hover'` |
 

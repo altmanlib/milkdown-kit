@@ -129,16 +129,24 @@ packages/
 |---|---|
 | `root` | 编辑器挂载到 `root` 内新建的 `div.md-editor` 容器里，`destroy()` 时移除这个容器，不改动 `root` 本身 |
 | `uploadImage` | `image-block` 的三个上传回调都指向它。未提供时，上传回调直接拒绝，避免把会失效的 `blob:` URL 写进文档；容器带 `data-upload="disabled"`，CSS 隐藏上传按钮，占位文案为「粘贴图片链接」 |
-| `features` | 决定是否调用 `CrepeBuilder.addFeature()`。`FeatureName` 由本包自己定义，不直接复用 `CrepeFeature` |
+| `features` | 决定是否调用 `CrepeBuilder.addFeature()`。`FeatureName` 由本包自己定义，按使用方看到的功能命名，在核心内部映射到 Crepe 的功能名，不直接复用 `CrepeFeature` |
 | `locale` | 展开成各功能的文案字段；默认 `zh-CN` |
 | `onChange` | 基于 `CrepeBuilder.on()` 注册的 listener，只在用户编辑时触发，`setMarkdown()` 不触发 |
 | `codeBlockTools` | 代码块的语言选择和复制按钮。`always`（默认）一直显示；`hover` 鼠标悬停时显示，不支持悬停的设备上仍一直显示。通过容器的 `data-code-tools` 属性交给 CSS 处理 |
 
-`FeatureName` 包含的功能和默认值：
+`FeatureName` 包含的功能，默认全部开启：
 
-| 功能 | 默认 |
-|---|---|
-| `code-mirror`、`list-item`、`link-tooltip`、`cursor`、`image-block`、`block-edit`、`toolbar`、`placeholder`、`table` | 开启 |
+| `FeatureName` | 对应的 Crepe 功能 | 关闭后 |
+|---|---|---|
+| `toolbar` | `toolbar` | 选中文字时不显示格式工具栏 |
+| `block-menu` | `block-edit` | 没有斜杠菜单和块手柄 |
+| `code-block` | `code-mirror` | 代码块不带语法高亮、语言选择和复制按钮 |
+| `image-block` | `image-block` | 图片按普通 Markdown 图片显示，没有上传和缩放 |
+| `table` | `table` | 表格没有行列手柄 |
+| `link-tooltip` | `link-tooltip` | 没有链接预览和编辑浮窗 |
+| `placeholder` | `placeholder` | 空文档不显示占位文案 |
+
+Crepe 的 `cursor`（拖放和间隙光标）和 `list-item`（列表项和任务列表的渲染）始终开启，不提供开关：关闭它们只会让基础编辑变差，公开后 1.0 起无法再收回
 
 `latex`、`top-bar`、`ai` 不在 `FeatureName` 中，本包不提供
 
@@ -265,7 +273,7 @@ Milkdown 的升级由本项目统一跟进，使用方不需要直接安装 `@mi
 
 **结论**：以 Crepe 的通用样式为基础（只引入已启用功能的部分），在上面叠加本包自己的 token 层、内容层、代码层和弹层层。不引入 Crepe 的任何主题文件，所有颜色都来自本包的 token
 
-token 清单见 [api.md](../reference/api.md) §5。圆角分 `sm` / `md` / `lg` 三级：弹层用 `lg`、内边距 4px，内部菜单项用 `md`，保证里外圆角同心
+token 清单见 [api.md](../reference/api.md) §5。Crepe 中只在一两处使用的颜色（`surface-low`、`secondary`、`inverse` 等）不单独提供 token，由最接近的公开 token 推导，覆盖主题时一起变化。圆角分 `sm` / `md` / `lg` 三级：弹层用 `lg`、内边距 4px，内部菜单项用 `md`，保证里外圆角同心
 
 - 暗色模式：`.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"` 时生效，不依赖 `prefers-color-scheme`
 - 密度：标题、段落、列表、代码块、表格采用紧凑间距

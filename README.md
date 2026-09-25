@@ -143,7 +143,7 @@ export function App() {
 | `locale` | `'zh-CN' \| 'en'` | `'zh-CN'` | 界面语言 |
 | `codeBlockTools` | `'always' \| 'hover'` | `'always'` | 代码块的语言选择和复制按钮是否一直显示 |
 
-`FeatureName`：`code-mirror`、`list-item`、`link-tooltip`、`cursor`、`image-block`、`block-edit`、`toolbar`、`placeholder`、`table`
+`FeatureName`：`toolbar`（格式工具栏）、`block-menu`（斜杠菜单和块手柄）、`code-block`（代码高亮、语言选择和复制）、`image-block`（图片上传和缩放）、`table`（表格手柄）、`link-tooltip`（链接浮窗）、`placeholder`（占位文案）
 
 除 `readonly` 外，其他选项只在创建时生效。需要变更时，通过 `key` 重建组件
 
