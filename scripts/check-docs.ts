@@ -44,10 +44,10 @@ function checkLinks(file: string, body: string, errors: string[]): void {
 async function checkFile(file: string): Promise<string[]> {
   const errors: string[] = []
   const content = await readFile(file, 'utf8')
-  const isIndex = dirname(file) === docsDir
+  const isIndex = file === join(docsDir, 'README.md')
   const frontMatter = /^---\n([\s\S]*?)\n---\n/.exec(content)
 
-  // Files directly under docs/ (the index) are outside the front matter scope.
+  // docs/README.md (the index) is outside the front matter scope.
   if (isIndex) {
     checkLinks(file, content, errors)
     return errors

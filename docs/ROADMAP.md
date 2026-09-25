@@ -22,9 +22,9 @@ updated: 2026-09-25
 
 ## 2. 当前状态
 
-当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 提供 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](editor-architecture.md)
+当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 提供 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](design/editor-architecture.md)
 
-`0.x` 阶段允许不兼容变更（[editor-architecture.md](editor-architecture.md) §5）。1.0 表示对外 API（§4.4、§4.5）和 CSS token（§4.8）稳定，之后不兼容变更只进 major
+`0.x` 阶段允许不兼容变更（[editor-architecture.md](design/editor-architecture.md) §5）。1.0 表示对外 API（§4.4、§4.5）和 CSS token（§4.8）稳定，之后不兼容变更只进 major
 
 ## 3. 0.3.0
 
@@ -46,15 +46,15 @@ updated: 2026-09-25
 
 | 编号 | 项 | 触发条件 | 详情 |
 |---|---|---|---|
-| R05 | 公式支持 | 有使用方需要公式 | [editor-architecture.md](editor-architecture.md) §9 |
-| R06 | React 组件 | 有 React 项目需要接入 | [editor-architecture.md](editor-architecture.md) §9 |
-| R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | [editor-architecture.md](editor-architecture.md) §9 |
-| R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | [editor-architecture.md](editor-architecture.md) §9 |
-| R09 | 删除图片 Markdown 规避 | 上游修复 §2.2 的缺陷 | [editor-architecture.md](editor-architecture.md) §5 |
-| R10 | TypeScript 7 | vue-tsc 和 rolldown-plugin-dts 支持 TypeScript 7 的原生编译器 | [editor-architecture.md](editor-architecture.md) §4.7 |
-| R11 | Dependabot 管理 npm 依赖 | Dependabot 的 bun 更新器支持 `bun.lock` 的 `lockfileVersion` 2 | [release.md](../guide/release.md) §3.1 |
-| R12 | 各包独立版本号 | 某个框架包需要升 major，而其他框架的使用方不应该跟着升 | [editor-architecture.md](editor-architecture.md) §4.9 |
+| R05 | 公式支持 | 有使用方需要公式 | [editor-architecture.md](design/editor-architecture.md) §9 |
+| R06 | React 组件 | 有 React 项目需要接入 | [editor-architecture.md](design/editor-architecture.md) §9 |
+| R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | [editor-architecture.md](design/editor-architecture.md) §9 |
+| R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | [editor-architecture.md](design/editor-architecture.md) §9 |
+| R09 | 删除图片 Markdown 规避 | 上游修复 §2.2 的缺陷 | [editor-architecture.md](design/editor-architecture.md) §5 |
+| R10 | TypeScript 7 | vue-tsc 和 rolldown-plugin-dts 支持 TypeScript 7 的原生编译器 | [editor-architecture.md](design/editor-architecture.md) §4.7 |
+| R11 | Dependabot 管理 npm 依赖 | Dependabot 的 bun 更新器支持 `bun.lock` 的 `lockfileVersion` 2 | [release.md](guide/release.md) §3.1 |
+| R12 | 各包独立版本号 | 某个框架包需要升 major，而其他框架的使用方不应该跟着升 | [editor-architecture.md](design/editor-architecture.md) §4.9 |
 
 ## 6. 明确不做
 
-见 [editor-architecture.md](editor-architecture.md) §8
+见 [editor-architecture.md](design/editor-architecture.md) §8

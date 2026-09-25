@@ -7,7 +7,7 @@
 | 文档 | type | status | 说明 |
 |---|---|---|---|
 | [editor-architecture.md](design/editor-architecture.md) | design | published | 编辑器封装方案：选型、包名、分层、对外 API、Vue 组件、依赖、主题 token、构建与发布 |
-| [roadmap.md](design/roadmap.md) | design | draft | 路线图：计划编号规则、0.3.0 与 1.0 之前的计划、按需触发的计划 |
+| [ROADMAP.md](ROADMAP.md) | design | draft | 路线图：计划编号规则、0.3.0 与 1.0 之前的计划、按需触发的计划 |
 | [release.md](guide/release.md) | guide | published | 发版流程：发布配置现状、changeset、检查、已知现象、手动发布与撤回 |
 | [2026-09-23-01-markdown-normalization.md](record/2026-09-23-01-markdown-normalization.md) | record | published | Markdown 往返时的格式规范化及其影响 |
 
@@ -21,6 +21,8 @@
 | `record/` | 决策、已知限制、复盘 | `record` |
 
 目录在出现第一篇对应文档时创建，不预建空目录
+
+`docs/` 根目录只放跨类型的索引文档：`README.md`（本文件）和 `ROADMAP.md`（路线图，`type: design`）
 
 ## 3. 格式规范采纳声明
 
@@ -45,7 +47,7 @@
 
 ### 3.3 默认约定（软条款）
 
-- 文件名使用小写英文和连字符；需要按时间排序时，命名为 `YYYY-MM-DD-NN-slug.md`
+- 文件名使用小写英文和连字符（根目录的 `README.md`、`ROADMAP.md` 除外）；需要按时间排序时，命名为 `YYYY-MM-DD-NN-slug.md`
 - 章节使用 `## 1.` 编号；`record` 类型不编号
 - 代码块必须标注语言
 - 枚举和对比用表格，表格不超过 6 列
