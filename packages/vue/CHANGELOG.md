@@ -1,5 +1,12 @@
 # @altmanlib/milkdown-kit-vue
 
+## 0.4.0
+
+### Patch Changes
+
+- Updated dependencies [924f7b4]
+  - @altmanlib/milkdown-kit@0.4.0
+
 ## 0.3.0
 
 ### Patch Changes
