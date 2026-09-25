@@ -2,7 +2,7 @@
 title: 编辑器封装方案
 type: design
 status: published
-updated: 2026-09-23
+updated: 2026-09-25
 ---
 
 # 编辑器封装方案
@@ -353,11 +353,11 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 
 ## 9. 开放项
 
-| 项 | 触发条件 | 处理方式 |
-|---|---|---|
-| 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
-| React 组件 | 有 React 项目需要接入 | 新增 `packages/react`（`@altmanlib/milkdown-kit-react`），加入 changesets 的 `fixed` 分组。peer 依赖 `react` / `react-dom` 为 `^19.0.0`，`ref` 作为普通 prop，不使用已标为弃用的 `forwardRef`。有接入项目停留在 React 18 时，再放宽到 `^18.0.0 \|\| ^19.0.0`（兼容变更），并在 CI 中加入 React 18 的测试 |
-| 体积上限 | 使用方反馈加载性能问题 | 以 §6 的基线数据设定 gzip 上限，并在 CI 中卡住 |
-| 自动化 E2E | 交互层出现回归，或交互改动变得频繁 | 把 §6 的手动交互验证写成 playwright 用例，在 CI 中针对 playground 运行 |
-| 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
-| 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |
+编号和排期见 [roadmap.md](roadmap.md)
+
+| 编号 | 项 | 触发条件 | 处理方式 |
+|---|---|---|---|
+| R05 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
+| R06 | React 组件 | 有 React 项目需要接入 | 新增 `packages/react`（`@altmanlib/milkdown-kit-react`），加入 changesets 的 `fixed` 分组。peer 依赖 `react` / `react-dom` 为 `^19.0.0`，`ref` 作为普通 prop，不使用已标为弃用的 `forwardRef`。有接入项目停留在 React 18 时，再放宽到 `^18.0.0 \|\| ^19.0.0`（兼容变更），并在 CI 中加入 React 18 的测试 |
+| R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
+| R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |

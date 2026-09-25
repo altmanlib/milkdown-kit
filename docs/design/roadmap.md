@@ -1,0 +1,60 @@
+---
+title: 路线图
+type: design
+status: draft
+updated: 2026-09-25
+---
+
+# 路线图
+
+## 1. 编号规则
+
+每个计划有一个固定编号 `Rnn`，用于在 issue、PR、commit 和 changeset 中引用
+
+| 规则 | 说明 |
+|---|---|
+| 分配 | 新计划取「已分配到」的下一个编号，不按优先级排序 |
+| 不变 | 计划调整阶段、改名或拆分时，原编号保留；拆出的新计划分配新编号 |
+| 不复用 | 完成或放弃的计划从本文删除，编号不再分配给其他计划 |
+| 记录 | 完成的计划由 changeset 生成的 `CHANGELOG.md` 记录，对应 changeset 或 PR 中注明编号 |
+
+已分配到：R12
+
+## 2. 当前状态
+
+当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 提供 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](editor-architecture.md)
+
+`0.x` 阶段允许不兼容变更（[editor-architecture.md](editor-architecture.md) §5）。1.0 表示对外 API（§4.4、§4.5）和 CSS token（§4.8）稳定，之后不兼容变更只进 major
+
+## 3. 0.3.0
+
+| 编号 | 项 | 理由 | 验收标准 |
+|---|---|---|---|
+| R01 | API 参考文档 | 对外 API、Vue props 和 CSS token 目前分散在设计文档的取舍说明中，使用方不便查阅；R03 需要一份完整清单作为评审对象 | `docs/reference/` 下的文档覆盖两个包的全部导出、`MdEditor` 的 props / 事件 / 暴露的句柄、全部 `--md-editor-*` token；设计文档中的对应表格改为链接 |
+| R02 | 交互 E2E | 斜杠菜单、工具栏、暗色、窄屏等目前只在 playground 中手动验证（§6），R03 可能调整行为，需要先有回归保护 | 把 §6 的手动交互验证写成 playwright 用例，在 CI 中针对 playground 运行 |
+
+## 4. 1.0 之前
+
+| 编号 | 项 | 理由 | 验收标准 |
+|---|---|---|---|
+| R03 | API 冻结评审 | 1.0 之后删除或重命名都要升 major，需要在 `0.x` 内完成所有不兼容调整 | 逐项确认 R01 清单中每个导出、prop 和 token 的去留与命名；需要的不兼容变更已在 `0.x` 版本中发布 |
+| R04 | 体积上限 | 1.0 之后体积回退同样影响使用方，需要在 CI 中发现 | 以 §6 的基线数据设定各产物的 gzip 上限，超出时 CI 失败 |
+
+## 5. 按需触发
+
+以下计划不排期，满足触发条件时再做，处理方式见各自的链接
+
+| 编号 | 项 | 触发条件 | 详情 |
+|---|---|---|---|
+| R05 | 公式支持 | 有使用方需要公式 | [editor-architecture.md](editor-architecture.md) §9 |
+| R06 | React 组件 | 有 React 项目需要接入 | [editor-architecture.md](editor-architecture.md) §9 |
+| R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | [editor-architecture.md](editor-architecture.md) §9 |
+| R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | [editor-architecture.md](editor-architecture.md) §9 |
+| R09 | 删除图片 Markdown 规避 | 上游修复 §2.2 的缺陷 | [editor-architecture.md](editor-architecture.md) §5 |
+| R10 | TypeScript 7 | vue-tsc 和 rolldown-plugin-dts 支持 TypeScript 7 的原生编译器 | [editor-architecture.md](editor-architecture.md) §4.7 |
+| R11 | Dependabot 管理 npm 依赖 | Dependabot 的 bun 更新器支持 `bun.lock` 的 `lockfileVersion` 2 | [release.md](../guide/release.md) §3.1 |
+| R12 | 各包独立版本号 | 某个框架包需要升 major，而其他框架的使用方不应该跟着升 | [editor-architecture.md](editor-architecture.md) §4.9 |
+
+## 6. 明确不做
+
+见 [editor-architecture.md](editor-architecture.md) §8
