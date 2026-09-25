@@ -16,8 +16,13 @@ import {
 } from 'react'
 
 export interface MdEditorProps {
-  /** Controlled Markdown content. */
+  /**
+   * Markdown content kept in sync with the editor: external changes are written into it.
+   * Omit it to leave the editor uncontrolled and start from `defaultValue`.
+   */
   value?: string
+  /** Creation-time only. Initial content when `value` is omitted. */
+  defaultValue?: string
   readonly?: boolean
   /** Creation-time only. */
   placeholder?: string
@@ -40,7 +45,8 @@ export interface MdEditorProps {
 }
 
 export function MdEditor({
-  value = '',
+  value,
+  defaultValue,
   readonly = false,
   placeholder,
   uploadImage,
@@ -57,7 +63,7 @@ export function MdEditor({
   const [editor, setEditor] = useState<EditorHandle | null>(null)
   // The last value known to be in sync with the editor. External updates equal to it
   // are echoes of our own onChange and must not be written back (avoids cursor jumps).
-  const syncedValueRef = useRef(value)
+  const syncedValueRef = useRef(value ?? defaultValue ?? '')
   const valueRef = useRef(value)
   const readonlyRef = useRef(readonly)
   const onChangeRef = useRef(onChange)
@@ -98,7 +104,7 @@ export function MdEditor({
         return
       }
       instance = created
-      if (valueRef.current !== syncedValueRef.current) {
+      if (valueRef.current !== undefined && valueRef.current !== syncedValueRef.current) {
         syncedValueRef.current = valueRef.current
         created.setMarkdown(valueRef.current)
       }
@@ -122,7 +128,7 @@ export function MdEditor({
   }, [editor])
 
   useEffect(() => {
-    if (!editor || value === syncedValueRef.current) return
+    if (!editor || value === undefined || value === syncedValueRef.current) return
     syncedValueRef.current = value
     editor.setMarkdown(value)
   }, [editor, value])

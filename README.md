@@ -134,7 +134,7 @@ export function App() {
 
 | 选项 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `defaultValue` | `string` | `''` | 初始内容（Vue 用 `v-model`，React 用 `value` / `onChange`） |
+| `defaultValue` | `string` | `''` | 初始内容（Vue 用 `v-model`；React 用 `value` / `onChange` 同步，或只传 `defaultValue` 作为非受控） |
 | `readonly` | `boolean` | `false` | 只读；Vue 组件中是响应式的 |
 | `placeholder` | `string` | 按 `locale` | 空文档的占位文案 |
 | `onChange` | `(markdown) => void` | — | 用户编辑后触发，200ms 防抖（Vue 用 `v-model`，React 用 `onChange`） |

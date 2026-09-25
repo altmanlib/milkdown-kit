@@ -202,7 +202,7 @@ packages/
 
 | 项 | 结论 |
 |---|---|
-| 受控内容 | `value` / `onChange`，语义对齐 Vue 的 `v-model` |
+| 受控内容 | `value` / `onChange`，语义对齐 Vue 的 `v-model`。不传 `value` 时为非受控，初始内容取 `defaultValue`（仅创建时），之后不同步外部值；两者都传时以 `value` 为准。`value` 没有默认值，否则无法区分「受控为空」和「非受控」 |
 | 其他 props | 和 `MdEditorOptions` 一一对应，camelCase 命名；另增 `onReady`、`className`、`style` |
 | 外部改值 | 只有当新值和组件上次同步的值不同时，才调用 `setMarkdown()`，避免循环更新和光标跳动 |
 | `readonly` | 响应式，变化时调用 `setReadonly()` |

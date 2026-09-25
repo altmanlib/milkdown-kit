@@ -91,7 +91,8 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 
 | Prop | 类型 | 默认 | 仅创建时 | 说明 |
 |---|---|---|---|---|
-| `value` | `string` | `''` | 否 | 外部改值时调用 `setMarkdown()`；`onChange` 发出的值不会回写 |
+| `value` | `string` | — | 否 | 外部改值时调用 `setMarkdown()`；`onChange` 发出的值不会回写。不传时为非受控 |
+| `defaultValue` | `string` | `''` | 是 | 不传 `value` 时的初始内容；两者都传时以 `value` 为准 |
 | `onChange` | `(markdown: string) => void` | — | 否 | 用户编辑后触发，200ms 防抖 |
 | `readonly` | `boolean` | `false` | 否 | 变化时调用 `setReadonly()` |
 | `onReady` | `(editor: EditorHandle) => void` | — | 否 | 编辑器就绪后调用一次，此时 `ref` 已指向编辑器 |
