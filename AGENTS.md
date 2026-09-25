@@ -16,7 +16,15 @@ bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`pack
 - workspace 内部依赖不用 `workspace:` 协议（`npm publish` 不会改写它）。`bun add` 会自动写成 `workspace:*`，按 release.md §3.2 处理
 - 用户可见的行为改动需要添加 changeset（`.changeset/*.md`）
 - 不在本地执行 `npm publish`；发布由 CI 完成，例外情况按 release.md §5 处理
-- `git push`、打 tag、创建 GitHub Release 只在仓库所有者明确同意后执行
+- 打 tag、创建 GitHub Release、合并「Version Packages」PR 只在仓库所有者明确同意后执行
+
+## Git 工作流
+
+- 每个功能在单独的分支上开发，分支名为 `<类型>/<简短描述>`，类型和提交信息的前缀一致（`feat`、`fix`、`docs`、`test`、`chore`），例如 `feat/react-package`
+- 不在 `main` 上直接提交，`main` 只接收功能分支的合并
+- 分支上可以随时提交，并推送到远程的同名分支
+- 功能完成后，先运行 `bun run check`、`bun run build`、`bun run check:package`，全部通过并经仓库所有者确认后，用 `git merge --squash` 合并到 `main` 并推送，然后删除该分支
+- 分支落后于 `main` 时，把 `main` 合并进分支，不改写已推送的历史
 
 ## 浏览器自动化
 
