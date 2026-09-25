@@ -15,7 +15,7 @@ import type { Editor } from '@milkdown/kit/core'
 import type { FeatureName } from './types'
 
 // Order follows Crepe's own `defaultFeatures` loading order.
-export const FEATURE_NAMES = [
+export const CREPE_FEATURES = [
   'cursor',
   'list-item',
   'link-tooltip',
@@ -25,13 +25,29 @@ export const FEATURE_NAMES = [
   'toolbar',
   'code-mirror',
   'table',
-] as const satisfies readonly FeatureName[]
+] as const
+
+export type CrepeFeature = (typeof CREPE_FEATURES)[number]
+
+// Public feature names mapped onto Crepe's. Crepe features missing here are always on.
+const PUBLIC_FEATURES: Record<FeatureName, CrepeFeature> = {
+  'toolbar': 'toolbar',
+  'block-menu': 'block-edit',
+  'code-block': 'code-mirror',
+  'image-block': 'image-block',
+  'table': 'table',
+  'link-tooltip': 'link-tooltip',
+  'placeholder': 'placeholder',
+}
 
 export function resolveFeatures(
   overrides: Partial<Record<FeatureName, boolean>> = {},
-): Record<FeatureName, boolean> {
-  const resolved = {} as Record<FeatureName, boolean>
-  for (const name of FEATURE_NAMES) resolved[name] = overrides[name] ?? true
+): Record<CrepeFeature, boolean> {
+  const resolved = {} as Record<CrepeFeature, boolean>
+  for (const name of CREPE_FEATURES) resolved[name] = true
+  for (const [name, crepe] of Object.entries(PUBLIC_FEATURES) as [FeatureName, CrepeFeature][]) {
+    resolved[crepe] = overrides[name] ?? true
+  }
   return resolved
 }
 
@@ -61,10 +77,10 @@ const FEATURES = {
 
 export function applyFeatures(
   builder: CrepeBuilder,
-  enabled: Record<FeatureName, boolean>,
+  enabled: Record<CrepeFeature, boolean>,
   configs: FeatureConfigs,
 ): void {
-  for (const name of FEATURE_NAMES) {
+  for (const name of CREPE_FEATURES) {
     if (!enabled[name]) continue
     const feature = FEATURES[name] as (editor: Editor, config?: unknown) => void
     builder.addFeature<unknown>(feature, configs[name])
