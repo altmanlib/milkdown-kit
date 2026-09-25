@@ -24,21 +24,20 @@ updated: 2026-09-25
 
 当前版本 0.2.0：核心包 `@altmanlib/milkdown-kit` 提供 `createEditor()` 和主题样式，Vue 包 `@altmanlib/milkdown-kit-vue` 提供 `MdEditor` 组件。方案和已实现的能力见 [editor-architecture.md](design/editor-architecture.md)
 
-`0.x` 阶段允许不兼容变更（[editor-architecture.md](design/editor-architecture.md) §5）。1.0 表示对外 API（§4.4、§4.5）和 CSS token（§4.8）稳定，之后不兼容变更只进 major
+`0.x` 阶段允许不兼容变更（[editor-architecture.md](design/editor-architecture.md) §5）。1.0 表示对外 API 和 CSS token（[api.md](reference/api.md)）稳定，之后不兼容变更只进 major
 
 ## 3. 0.3.0
 
 | 编号 | 项 | 理由 | 验收标准 |
 |---|---|---|---|
-| R01 | API 参考文档 | 对外 API、Vue props 和 CSS token 目前分散在设计文档的取舍说明中，使用方不便查阅；R03 需要一份完整清单作为评审对象 | `docs/reference/` 下的文档覆盖两个包的全部导出、`MdEditor` 的 props / 事件 / 暴露的句柄、全部 `--md-editor-*` token；设计文档中的对应表格改为链接 |
-| R02 | 交互 E2E | 斜杠菜单、工具栏、暗色、窄屏等目前只在 playground 中手动验证（§6），R03 可能调整行为，需要先有回归保护 | 把 §6 的手动交互验证写成 playwright 用例，在 CI 中针对 playground 运行 |
+| R02 | 交互 E2E | 斜杠菜单、工具栏、暗色、窄屏等目前只在 playground 中手动验证（[editor-architecture.md](design/editor-architecture.md) §6），R03 可能调整行为，需要先有回归保护 | 把这些手动验证写成 playwright 用例，在 CI 中针对 playground 运行 |
 
 ## 4. 1.0 之前
 
 | 编号 | 项 | 理由 | 验收标准 |
 |---|---|---|---|
-| R03 | API 冻结评审 | 1.0 之后删除或重命名都要升 major，需要在 `0.x` 内完成所有不兼容调整 | 逐项确认 R01 清单中每个导出、prop 和 token 的去留与命名；需要的不兼容变更已在 `0.x` 版本中发布 |
-| R04 | 体积上限 | 1.0 之后体积回退同样影响使用方，需要在 CI 中发现 | 以 §6 的基线数据设定各产物的 gzip 上限，超出时 CI 失败 |
+| R03 | API 冻结评审 | 1.0 之后删除或重命名都要升 major，需要在 `0.x` 内完成所有不兼容调整 | 逐项确认 [api.md](reference/api.md) 中每个导出、prop 和 token 的去留与命名，包括 §7 中名称带公开前缀的内部变量；需要的不兼容变更已在 `0.x` 版本中发布 |
+| R04 | 体积上限 | 1.0 之后体积回退同样影响使用方，需要在 CI 中发现 | 以 [editor-architecture.md](design/editor-architecture.md) §6 的基线数据设定各产物的 gzip 上限，超出时 CI 失败 |
 
 ## 5. 按需触发
 

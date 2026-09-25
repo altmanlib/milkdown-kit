@@ -120,31 +120,7 @@ Vue 组件不使用 `@milkdown/vue`：核心已经负责编辑器的创建和销
 
 ### 4.4 核心 API
 
-```ts
-interface MdEditorOptions {
-  defaultValue?: string
-  readonly?: boolean
-  placeholder?: string
-  onChange?: (markdown: string) => void          // Debounced by the editor (200ms)
-  uploadImage?: (file: File) => Promise<string>  // Returns the image URL
-  features?: Partial<Record<FeatureName, boolean>>
-  locale?: 'zh-CN' | 'en'
-  codeBlockTools?: 'always' | 'hover'
-}
-
-interface EditorHandle {
-  getMarkdown(): string
-  setMarkdown(markdown: string): void  // Replaces the document and resets undo history
-  setReadonly(readonly: boolean): void
-  focus(): void
-  destroy(): Promise<void>
-}
-
-declare function createEditor(
-  root: HTMLElement,
-  options?: MdEditorOptions,
-): Promise<EditorHandle>
-```
+完整签名、选项默认值和 `EditorHandle` 的方法见 [api.md](../reference/api.md) §2、§3。本节记录实现方式
 
 | 参数 | 实现方式 |
 |---|---|
@@ -181,7 +157,7 @@ declare function createEditor(
 
 ### 4.5 Vue 组件
 
-由 `@altmanlib/milkdown-kit-vue` 提供
+由 `@altmanlib/milkdown-kit-vue` 提供。props、事件和暴露的实例见 [api.md](../reference/api.md) §4
 
 ```vue
 <MdEditor
@@ -255,14 +231,7 @@ Milkdown 的升级由本项目统一跟进，使用方不需要直接安装 `@mi
 
 **结论**：以 Crepe 的通用样式为基础（只引入已启用功能的部分），在上面叠加本包自己的 token 层、内容层、代码层和弹层层。不引入 Crepe 的任何主题文件，所有颜色都来自本包的 token
 
-| 类别 | token | 说明 |
-|---|---|---|
-| 颜色 | `--md-editor-color-*` | 背景、文字、主色、边框（`border` / `divider`）、悬停（`hover` / `active` / `selected`）、弹层背景（`overlay`）等，映射到 Crepe 的 `--crepe-color-*` |
-| 圆角 | `--md-editor-radius-sm` / `md` / `lg` | 3px / 4px / 8px。`lg` 用于弹层，弹层内边距 4px，内部菜单项用 `md`，保证里外圆角同心 |
-| 阴影 | `--md-editor-shadow-sm` / `overlay` | 多层柔和阴影；暗色下使用黑色阴影 |
-| 代码高亮 | `--md-editor-code-*` | 关键字、字符串、数字、注释、函数、类型、属性、元信息 |
-| 排版 | `--md-editor-font-*`、`--md-editor-font-size`、`--md-editor-line-height` | 默认 15px、行高 1.6，字体优先使用系统中文字体 |
-| 布局 | `--md-editor-padding` | 默认 `20px 32px 20px 64px`，左侧 64px 给块手柄预留位置 |
+token 清单见 [api.md](../reference/api.md) §5。圆角分 `sm` / `md` / `lg` 三级：弹层用 `lg`、内边距 4px，内部菜单项用 `md`，保证里外圆角同心
 
 - 暗色模式：`.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"` 时生效，不依赖 `prefers-color-scheme`
 - 密度：标题、段落、列表、代码块、表格采用紧凑间距
