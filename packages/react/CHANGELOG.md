@@ -1,5 +1,16 @@
 # @altmanlib/milkdown-kit-react
 
+## 0.4.0
+
+### Minor Changes
+
+- 924f7b4: Add `defaultValue` to the React `MdEditor` for uncontrolled use. `value` no longer defaults to `''`: when it is omitted the editor starts from `defaultValue` and is not synced with later props.
+
+### Patch Changes
+
+- Updated dependencies [924f7b4]
+  - @altmanlib/milkdown-kit@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

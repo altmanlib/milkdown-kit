@@ -1,6 +1,6 @@
 {
   "name": "@altmanlib/milkdown-kit-react",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "React 19 component for @altmanlib/milkdown-kit, an opinionated Markdown editor built on Milkdown Crepe",
   "license": "MIT",
   "type": "module",
@@ -40,6 +40,6 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@altmanlib/milkdown-kit": "^0.3.0"
+    "@altmanlib/milkdown-kit": "^0.4.0"
   }
 }
