@@ -166,4 +166,56 @@ describe('MdEditor', () => {
     })
     expect(view.container.querySelectorAll('.md-editor')).toHaveLength(1)
   })
+
+  it('starts from defaultValue when value is omitted', async () => {
+    let editor: EditorHandle | null = null
+    render(
+      <MdEditor
+        defaultValue={'# Draft\n'}
+        onReady={(handle) => {
+          editor = handle
+        }}
+      />,
+    )
+    await waitFor(() => expect(editor).not.toBeNull())
+    expect(editor!.getMarkdown()).toBe('# Draft\n')
+  })
+
+  it('prefers value over defaultValue', async () => {
+    let editor: EditorHandle | null = null
+    render(
+      <MdEditor
+        value={'from value\n'}
+        defaultValue={'from default\n'}
+        onReady={(handle) => {
+          editor = handle
+        }}
+      />,
+    )
+    await waitFor(() => expect(editor).not.toBeNull())
+    expect(editor!.getMarkdown()).toBe('from value\n')
+  })
+
+  it('keeps uncontrolled content across re-renders', async () => {
+    let editor: EditorHandle | null = null
+    function Host({ defaultValue }: { defaultValue: string }): ReactElement {
+      return (
+        <MdEditor
+          defaultValue={defaultValue}
+          onReady={(handle) => {
+            editor = handle
+          }}
+        />
+      )
+    }
+    const view = render(<Host defaultValue={'a\n'} />)
+    await waitFor(() => expect(editor).not.toBeNull())
+    editor!.setMarkdown('edited\n')
+    // defaultValue is creation-time only; changing it or re-rendering must not reset content.
+    view.rerender(<Host defaultValue={'b\n'} />)
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+    expect(editor!.getMarkdown()).toBe('edited\n')
+  })
 })

@@ -16,14 +16,14 @@ export const ROOT_CLASS = 'md-editor'
 const MENU_VIEWPORT_PADDING = 8
 
 // Keeps the slash menu inside the viewport on small screens: shift it horizontally
-// and expose the available height to CSS as --md-editor-menu-available-height.
+// and expose the available height to CSS as --md-editor-internal-menu-available-height.
 const slashMenuMiddleware = [
   shift({ padding: MENU_VIEWPORT_PADDING }),
   size({
     padding: MENU_VIEWPORT_PADDING,
     apply({ availableHeight, elements }) {
       elements.floating.style.setProperty(
-        '--md-editor-menu-available-height',
+        '--md-editor-internal-menu-available-height',
         `${Math.floor(availableHeight)}px`,
       )
     },

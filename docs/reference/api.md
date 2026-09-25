@@ -49,7 +49,7 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 
 | 类型 | 取值 |
 |---|---|
-| `FeatureName` | `'code-mirror'`、`'list-item'`、`'link-tooltip'`、`'cursor'`、`'image-block'`、`'block-edit'`、`'toolbar'`、`'placeholder'`、`'table'` |
+| `FeatureName` | `'toolbar'`、`'block-menu'`、`'code-block'`、`'image-block'`、`'table'`、`'link-tooltip'`、`'placeholder'`，含义见 [editor-architecture.md](../design/editor-architecture.md) §4.4 |
 | `Locale` | `'zh-CN'`、`'en'` |
 | `CodeBlockToolsMode` | `'always'`、`'hover'` |
 
@@ -91,7 +91,8 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 
 | Prop | 类型 | 默认 | 仅创建时 | 说明 |
 |---|---|---|---|---|
-| `value` | `string` | `''` | 否 | 外部改值时调用 `setMarkdown()`；`onChange` 发出的值不会回写 |
+| `value` | `string` | — | 否 | 外部改值时调用 `setMarkdown()`；`onChange` 发出的值不会回写。不传时为非受控 |
+| `defaultValue` | `string` | `''` | 是 | 不传 `value` 时的初始内容；两者都传时以 `value` 为准 |
 | `onChange` | `(markdown: string) => void` | — | 否 | 用户编辑后触发，200ms 防抖 |
 | `readonly` | `boolean` | `false` | 否 | 变化时调用 `setReadonly()` |
 | `onReady` | `(editor: EditorHandle) => void` | — | 否 | 编辑器就绪后调用一次，此时 `ref` 已指向编辑器 |
@@ -112,20 +113,15 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 | `--md-editor-color-background` | 编辑器背景 |
 | `--md-editor-color-on-background` | 正文文字 |
 | `--md-editor-color-surface` | 块背景：代码块、表格表头 |
-| `--md-editor-color-surface-low` | 代码块内的输入框和按钮背景 |
 | `--md-editor-color-on-surface` | 块内文字 |
 | `--md-editor-color-on-surface-variant` | 弹层中的次要文字 |
 | `--md-editor-color-muted` | 弱化文字：代码行号、代码块工具按钮、菜单分组标签 |
 | `--md-editor-color-primary` | 主色：链接、激活的按钮、焦点 |
-| `--md-editor-color-secondary` | 强调按钮背景：图片链接的确认按钮 |
-| `--md-editor-color-on-secondary` | 强调按钮上的文字 |
-| `--md-editor-color-inverse` | 反色背景：图片块上的操作按钮 |
-| `--md-editor-color-on-inverse` | 反色背景上的图标和文字 |
 | `--md-editor-color-inline-code` | 行内代码文字 |
 | `--md-editor-color-error` | 错误提示 |
 | `--md-editor-color-hover` | 悬停背景 |
 | `--md-editor-color-active` | 按下和当前项背景 |
-| `--md-editor-color-selected` | 选中背景 |
+| `--md-editor-color-selected` | 选中背景；也用作图片链接确认按钮的背景 |
 | `--md-editor-color-inline-area` | 行内代码背景 |
 | `--md-editor-color-border` | 边框 |
 | `--md-editor-color-divider` | 分割线 |
@@ -175,5 +171,5 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 | 项 | 用途 |
 |---|---|
 | `.md-editor` 上的 `data-upload`、`data-code-tools` 属性 | 把 `uploadImage` 和 `codeBlockTools` 传给 CSS |
-| `--md-editor-menu-max-height`、`--md-editor-menu-available-height` | 斜杠菜单的高度上限和视口可用高度，由样式和定位逻辑内部设置 |
+| `--md-editor-internal-*` 变量（例如斜杠菜单的高度上限和视口可用高度） | 由样式和定位逻辑内部设置和读取。带 `internal` 的名字不属于公开 token |
 | `.milkdown` 及其内部类名、`--crepe-*` 变量 | Crepe 的实现，随 Milkdown 升级变化 |

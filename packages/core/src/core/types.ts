@@ -1,13 +1,15 @@
+/**
+ * Features that can be turned off. Names describe what users see, not Crepe's internals;
+ * Crepe's cursor and list-item features are always on.
+ */
 export type FeatureName =
-  | 'cursor'
-  | 'list-item'
-  | 'link-tooltip'
-  | 'image-block'
-  | 'block-edit'
-  | 'placeholder'
   | 'toolbar'
-  | 'code-mirror'
+  | 'block-menu'
+  | 'code-block'
+  | 'image-block'
   | 'table'
+  | 'link-tooltip'
+  | 'placeholder'
 
 export type Locale = 'zh-CN' | 'en'
 
