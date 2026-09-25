@@ -1,5 +1,11 @@
 # @altmanlib/milkdown-kit
 
+## 0.3.0
+
+### Patch Changes
+
+- a9f0431: Add `@altmanlib/milkdown-kit-react`, a React 19 component mirroring the Vue package API with `value` / `onChange` and a `ref` that exposes `EditorHandle`
+
 ## 0.2.0
 
 ### Minor Changes
