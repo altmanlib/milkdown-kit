@@ -22,7 +22,7 @@ bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`pack
 
 - AI 助手固定在 `agent/develop` 分支上开发，不在 `main` 上直接提交；`main` 只接收分支的合并
 - 分支上可以随时提交，并推送到远程的 `agent/develop`
-- 功能完成后，先运行 `bun run check`、`bun run build`、`bun run check:package`，全部通过并经仓库所有者确认后，用 `git merge --squash` 合并到 `main` 并推送
+- 功能完成后，先运行 `bun run check`、`bun run build`、`bun run check:package`、`bun run check:size`，全部通过并经仓库所有者确认后，用 `git merge --squash` 合并到 `main` 并推送
 - 开始新功能前，把 `main` 合并进 `agent/develop`，不改写已推送的历史（不 rebase、不强制推送）
 
 ## 浏览器自动化
@@ -39,3 +39,4 @@ bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`pack
 | `bun run check` | 类型检查、测试、文档检查 |
 | `bun run build` | 依次构建核心包（tsdown + `packages/core/scripts/build-css.ts`）、Vue 包和 React 包 |
 | `bun run check:package` | 构建后对每个包运行 publint 和 attw |
+| `bun run check:size` | 构建后检查使用方打包体积（gzip）上限 |

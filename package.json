@@ -34,6 +34,7 @@
     "test": "vitest run",
     "check:docs": "bun scripts/check-docs.ts",
     "check:package": "bun run --filter './packages/*' check:package",
+    "check:size": "bun scripts/check-size.ts",
     "release": "bun run build && changeset publish",
     "check": "bun run typecheck && bun run test && bun run check:docs"
   },
