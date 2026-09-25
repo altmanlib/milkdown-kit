@@ -38,5 +38,5 @@ updated: 2026-09-23
 ## 结论
 
 - 表中的规范化接受上游行为，不做处理
-- 列表符号使用 `-` 列为开放项，见 [editor-architecture.md](../design/editor-architecture.md) §9
+- 列表符号使用 `-` 列为开放项，见 [editor-architecture.md](../design/editor-architecture.md) §8
 - `<br />` 和 `![]()` 出现在使用方的实际数据中并造成问题时，再在导出阶段过滤
