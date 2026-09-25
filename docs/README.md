@@ -7,6 +7,7 @@
 | 文档 | type | status | 说明 |
 |---|---|---|---|
 | [editor-architecture.md](design/editor-architecture.md) | design | published | 编辑器封装方案：选型、包名、分层、对外 API、Vue / React 组件、依赖、主题 token、构建与发布 |
+| [editor-candidate-goals.md](design/editor-candidate-goals.md) | design | draft | 开箱编辑器候选目标，供评估后是否进入路线图 |
 | [ROADMAP.md](ROADMAP.md) | design | draft | 路线图：计划编号规则、1.0 之前的计划、按需触发的计划 |
 | [release.md](guide/release.md) | guide | published | 发版流程：发布配置现状、changeset、检查、已知现象、手动发布与撤回 |
 | [api.md](reference/api.md) | reference | published | 对外 API：JS 导出、框架组件、样式入口、CSS token、DOM 约定 |
@@ -16,7 +17,7 @@
 
 | 目录 | 存放内容 | 对应 `type` |
 |---|---|---|
-| `design/` | 方案与取舍 | `design` |
+| `design/` | 方案 | `design` |
 | `guide/` | 开发、发布、接入的操作流程 | `guide` |
 | `reference/` | 对外 API、配置项、CSS 变量等可查阅事实 | `reference` |
 | `record/` | 决策、已知限制、复盘 | `record` |
@@ -52,7 +53,7 @@
 - 章节使用 `## 1.` 编号；`record` 类型不编号
 - 代码块必须标注语言
 - 枚举和对比用表格，表格不超过 6 列
-- 取舍写成「结论 + 理由 + 触发条件」
+- 写结论和必要的理由；不写被否决的方案、讨论过程和「不做什么」的反向说明。计划的触发条件写在 ROADMAP 和设计文档的开放项中
 - 数字要标明是否实测：实测的给出样本量，未实测的写「推断」
 - 过时内容直接删除
 - 不留「待续」「TODO」段落，未完成的文档标为 `status: draft`

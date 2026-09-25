@@ -71,10 +71,7 @@ updated: 2026-09-25
 **理由**：
 
 - Crepe 已经提供斜杠菜单、工具栏、代码块、表格、图片块等完整交互，和「开箱即用」的目标一致
-- 如果用 `@milkdown/kit` 从零实现这些 UI，首次开发和长期跟进上游的成本都明显更高
 - `CrepeBuilder` 只打包显式引入的功能。实测：在空 Vite + Vue 项目中安装本包并构建，产物里不含 KaTeX（样本 1 次构建）
-
-**改用 `@milkdown/kit` 的触发条件**：交互形态和 Crepe 差别很大，需要改写的 Crepe 功能超过一半
 
 **硬性约束**：源码中不得以运行时方式 import `@milkdown/crepe` 根入口，否则会引入所有功能（包括 KaTeX）。只允许 import `@milkdown/crepe/builder` 和 `@milkdown/crepe/feature/*`
 
@@ -87,9 +84,9 @@ updated: 2026-09-25
 - scope 和 GitHub 账号 `altmanlib` 一致，所有自有包可以放在同一个 scope 下
 - 核心包名和仓库名 `milkdown-kit` 一致，从包名就能看出底层是 Milkdown；框架包加后缀，和上游 `@milkdown/vue` 的拆分方式一致
 
-**代价**：和官方的 `@milkdown/kit` 只差一个斜杠和连字符，安装时容易写错。README 开头注明本包不是官方包
+README 开头注明本包不是 Milkdown 官方包，和官方的 `@milkdown/kit` 区分
 
-**组件与 CSS 命名**：类名 `.md-editor`、token 前缀 `--md-editor-*`、组件名 `MdEditor` 按编辑器组件命名，不使用 `milkdown` 前缀，避免和 Crepe 自带的 `.milkdown` 类名混淆
+**组件与 CSS 命名**：类名 `.md-editor`、token 前缀 `--md-editor-*`、组件名 `MdEditor` 按编辑器组件命名，和 Crepe 自带的 `.milkdown` 类名区分
 
 ### 4.3 分层
 
@@ -119,7 +116,7 @@ packages/
 
 依赖方向只能是框架包 → 核心包 → `@milkdown/crepe`。框架包只通过核心包的公开入口（`@altmanlib/milkdown-kit`）使用核心，不引用核心的内部文件；框架包之间互不依赖。`locale` 只被 `core` 引用
 
-框架组件不使用 `@milkdown/vue` 或上游 React 封装：核心已经负责编辑器的创建和销毁，组件直接调用 `createEditor()`，不需要再加一层上游的封装
+框架组件直接调用 `createEditor()`，编辑器的创建和销毁由核心负责
 
 ### 4.4 核心 API
 
@@ -129,7 +126,7 @@ packages/
 |---|---|
 | `root` | 编辑器挂载到 `root` 内新建的 `div.md-editor` 容器里，`destroy()` 时移除这个容器，不改动 `root` 本身 |
 | `uploadImage` | `image-block` 的三个上传回调都指向它。未提供时，上传回调直接拒绝，避免把会失效的 `blob:` URL 写进文档；容器带 `data-upload="disabled"`，CSS 隐藏上传按钮，占位文案为「粘贴图片链接」 |
-| `features` | 决定是否调用 `CrepeBuilder.addFeature()`。`FeatureName` 由本包自己定义，按使用方看到的功能命名，在核心内部映射到 Crepe 的功能名，不直接复用 `CrepeFeature` |
+| `features` | 决定是否调用 `CrepeBuilder.addFeature()`。`FeatureName` 由本包自己定义，按使用方看到的功能命名，在核心内部映射到 Crepe 的功能名 |
 | `locale` | 展开成各功能的文案字段；默认 `zh-CN` |
 | `onChange` | 基于 `CrepeBuilder.on()` 注册的 listener，只在用户编辑时触发，`setMarkdown()` 不触发 |
 | `codeBlockTools` | 代码块的语言选择和复制按钮。`always`（默认）一直显示；`hover` 鼠标悬停时显示，不支持悬停的设备上仍一直显示。通过容器的 `data-code-tools` 属性交给 CSS 处理 |
@@ -146,9 +143,7 @@ packages/
 | `link-tooltip` | `link-tooltip` | 没有链接预览和编辑浮窗 |
 | `placeholder` | `placeholder` | 空文档不显示占位文案 |
 
-Crepe 的 `cursor`（拖放和间隙光标）和 `list-item`（列表项和任务列表的渲染）始终开启，不提供开关：关闭它们只会让基础编辑变差，公开后 1.0 起无法再收回
-
-`latex`、`top-bar`、`ai` 不在 `FeatureName` 中，本包不提供
+Crepe 的 `cursor`（拖放和间隙光标）和 `list-item`（列表项和任务列表的渲染）始终开启
 
 **核心额外补上的上游配置**：
 
@@ -210,7 +205,7 @@ Crepe 的 `cursor`（拖放和间隙光标）和 `list-item`（列表项和任�
 
 | 项 | 结论 |
 |---|---|
-| 受控内容 | `value` / `onChange`，语义对齐 Vue 的 `v-model`。不传 `value` 时为非受控，初始内容取 `defaultValue`（仅创建时），之后不同步外部值；两者都传时以 `value` 为准。`value` 没有默认值，否则无法区分「受控为空」和「非受控」 |
+| 受控内容 | `value` / `onChange`，语义对齐 Vue 的 `v-model`。不传 `value` 时为非受控，初始内容取 `defaultValue`（仅创建时），之后不同步外部值；两者都传时以 `value` 为准。`value` 没有默认值 |
 | 其他 props | 和 `MdEditorOptions` 一一对应，camelCase 命名；另增 `onReady`、`className`、`style` |
 | 外部改值 | 只有当新值和组件上次同步的值不同时，才调用 `setMarkdown()`，避免循环更新和光标跳动 |
 | `readonly` | 响应式，变化时调用 `setReadonly()` |
@@ -259,7 +254,7 @@ Crepe 的 `cursor`（拖放和间隙光标）和 `list-item`（列表项和任�
 | `@floating-ui/dom` | 核心包 `dependencies` | 和 `@milkdown/plugin-slash` 的依赖范围一致 | 斜杠菜单的 `shift` / `size` middleware |
 | `@altmanlib/milkdown-kit` | 框架包 `dependencies` | `^<当前版本>`，不用 `workspace:` 协议 | 见§4.9。版本号由 changesets 在发版时同步 |
 | `vue` | Vue 包 `peerDependencies` | `^3.5.0` | 使用宿主项目的 Vue 实例。下限和 Crepe 依赖的 `vue ^3.5.20` 保持同一个 minor，避免宿主安装出两份 Vue |
-| `react`、`react-dom` | React 包 `peerDependencies` | `^19.0.0` | 使用宿主项目的 React 实例。`ref` 作为普通 prop，不使用已弃用的 `forwardRef` |
+| `react`、`react-dom` | React 包 `peerDependencies` | `^19.0.0` | 使用宿主项目的 React 实例。`ref` 作为普通 prop |
 | 构建、测试工具 | 根目录 `devDependencies` | — | 所有包共用一套工具链版本 |
 | `typescript` | 根目录 `devDependencies` | `~6.0.3` | TypeScript 7 不提供 vue-tsc 需要的 API（§2.3） |
 
@@ -271,11 +266,11 @@ Milkdown 的升级由本项目统一跟进，使用方不需要直接安装 `@mi
 
 ### 4.8 样式与主题
 
-**结论**：以 Crepe 的通用样式为基础（只引入已启用功能的部分），在上面叠加本包自己的 token 层、内容层、代码层和弹层层。不引入 Crepe 的任何主题文件，所有颜色都来自本包的 token
+**结论**：以 Crepe 的通用样式为基础（只引入已启用功能的部分），在上面叠加本包自己的 token 层、内容层、代码层和弹层层。所有颜色都来自本包的 token
 
-token 清单见 [api.md](../reference/api.md) §5。Crepe 中只在一两处使用的颜色（`surface-low`、`secondary`、`inverse` 等）不单独提供 token，由最接近的公开 token 推导，覆盖主题时一起变化。圆角分 `sm` / `md` / `lg` 三级：弹层用 `lg`、内边距 4px，内部菜单项用 `md`，保证里外圆角同心
+token 清单见 [api.md](../reference/api.md) §5。Crepe 的 `surface-low`、`secondary`、`inverse` 等颜色由最接近的公开 token 推导，覆盖主题时一起变化。圆角分 `sm` / `md` / `lg` 三级：弹层用 `lg`、内边距 4px，内部菜单项用 `md`，保证里外圆角同心
 
-- 暗色模式：`.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"` 时生效，不依赖 `prefers-color-scheme`
+- 暗色模式：`.md-editor` 的任意祖先元素（包括 `<html>`）上设置 `data-theme="dark"` 时生效
 - 密度：标题、段落、列表、代码块、表格采用紧凑间距
 - 弹层：斜杠菜单、选中文字工具栏、链接浮窗、代码语言选择、表格按钮组使用同一套背景、边框、圆角和阴影
 - 窄屏（≤ 480px）：隐藏块手柄并收窄内边距；斜杠菜单隐藏分组标签，最大高度 280px
@@ -288,8 +283,8 @@ token 清单见 [api.md](../reference/api.md) §5。Crepe 中只在一两处使�
 |---|---|
 | 仓库形态 | monorepo，bun workspaces（`packages/*`）。根目录 `private: true`，不发布 |
 | 包管理 | bun，版本由根目录 `package.json` 的 `packageManager` 固定；CI 中的 `setup-bun` 通过 `bun-version-file: package.json` 读取同一版本，保证本地和 CI 行为一致 |
-| JS 构建 | 每个包各自用 tsdown 构建；Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成；React 包输出 ESM 与 `.d.ts`，JSX 按根目录 `tsconfig.json` 的 `jsx: react-jsx` 编译为 `react/jsx-runtime` 调用（设为 `preserve` 时产物会保留 JSX，使用方无法打包）。框架包把核心包当作外部依赖，不打进产物。根目录 `bun run build` 先构建核心包，再构建框架包 |
-| CSS 构建 | 核心包的 `scripts/build-css.ts` 用 lightningcss 把 `@import` 内联成单个 `dist/style.css`。不用 tsdown 的 CSS 功能，它仍标为 experimental |
+| JS 构建 | 每个包各自用 tsdown 构建；Vue SFC 通过 `unplugin-vue` 编译，类型声明通过 vue-tsc 生成；React 包输出 ESM 与 `.d.ts`，JSX 按根目录 `tsconfig.json` 的 `jsx: react-jsx` 编译为 `react/jsx-runtime` 调用。框架包把核心包当作外部依赖，不打进产物。根目录 `bun run build` 先构建核心包，再构建框架包 |
+| CSS 构建 | 核心包的 `scripts/build-css.ts` 用 lightningcss 把 `@import` 内联成单个 `dist/style.css` |
 | 源码解析 | 类型检查、测试和 playground 把 `@altmanlib/milkdown-kit` 指向核心包源码（`tsconfig.json` 的 `paths` 和 `workspace-alias.ts`），不需要先构建 |
 | 开发预览 | 仓库内的 `playground/`（Vite + Vue），只用于演示，不进入发布产物 |
 | 版本与 changelog | changesets，配置 `access: public`。所有包放在同一个 `fixed` 分组，始终使用同一个版本号；每个包有自己的 `CHANGELOG.md` |
@@ -300,11 +295,11 @@ token 清单见 [api.md](../reference/api.md) §5。Crepe 中只在一两处使�
 
 **理由**：
 
-- 框架包的 peer 依赖是必需的，不需要标为 optional；使用方只安装自己框架的包
+- 使用方只安装自己框架的包，框架包的 peer 依赖都是必需的
 - 核心修改可以在一个 PR 里同时覆盖所有框架，工具链、CI 和文档只有一套
 - 上游 Milkdown、Tiptap、Floating UI 都采用这种结构（2026-09-23 通过 `npm view` 核对）
 
-**代价**：每个新包首次发布必须在本地手动完成，再登记 Trusted Publisher（见 [release.md](../guide/release.md) §5）
+每个新包的首次发布在本地手动完成，再登记 Trusted Publisher（见 [release.md](../guide/release.md) §5）
 
 **内部依赖不用 `workspace:` 协议**：changesets 在 bun 项目中用 `npm publish` 发布，而 npm 不会改写 `workspace:`，发布出去的包会无法安装。普通的 semver 范围在本地同样会链接到 workspace 包（bun 1.4.0 实测）。`bun add` 添加 workspace 包时会自动写成 `workspace:*`，需要手动改回，步骤见 [release.md](../guide/release.md) §3.2
 
@@ -352,7 +347,7 @@ React 包按同样步骤验证：空的 Vite + React 项目，执行 `tsc --noEm
 
 Crepe 内部用 Vue 实现部分界面（§2.1），所以 React 项目的编辑器产物中同样包含 Vue 运行时
 
-README 推荐使用方按需加载编辑器，包内不做额外的体积优化
+README 推荐使用方按需加载编辑器
 
 体积上限由 `scripts/check-size.ts` 检查：用 Vite 按使用方的方式打包构建后的核心包，统计 gzip 体积，超出上限或产物中出现 KaTeX 时失败
 
@@ -360,9 +355,9 @@ README 推荐使用方按需加载编辑器，包内不做额外的体积优化
 |---|---|---|
 | 首屏加载的 JS（核心包及全部依赖，含 Crepe 内部使用的 Vue 运行时） | 367,993 字节 | 405,000 字节 |
 | CSS | 7,633 字节 | 8,500 字节 |
-| 按需加载的 JS（代码语言语法） | 477,639 字节，117 个 chunk | 不限制 |
+| 按需加载的 JS（代码语言语法） | 477,639 字节，117 个 chunk | — |
 
-上限约为基线加 10%。框架包自身只有 1 KB 左右（gzip），不单独设上限。升级 Milkdown 或新增功能导致超出时，确认增量合理后再提高上限，并在提交信息中写明原因
+上限约为基线加 10%。升级 Milkdown 或新增功能导致超出时，确认增量合理后再提高上限，并在提交信息中写明原因
 
 ## 7. 迁移与兼容
 
@@ -370,19 +365,9 @@ README 推荐使用方按需加载编辑器，包内不做额外的体积优化
 
 Markdown 往返中的格式规范化（列表符号、标题风格等）不改变内容，详见 [2026-09-23-01-markdown-normalization.md](../record/2026-09-23-01-markdown-normalization.md)
 
-## 8. 明确不做
+## 8. 开放项
 
-- 不透传 Crepe / Milkdown 的原始配置和实例
-- 不内置任何上传、存储、鉴权实现
-- 不提供 `latex`、`top-bar`、`ai` 功能
-- 不支持 SSR 渲染编辑器；只保证在 SSR 环境中 import 时不报错
-- 不做协同编辑（Yjs）
-- 不输出 CJS
-- 不支持 React 18：React 包只支持 React 19，`ref` 依赖 React 19 的普通 prop 传递
-
-## 9. 开放项
-
-编号和排期见 [ROADMAP.md](../ROADMAP.md)
+编号和排期见 [ROADMAP.md](../ROADMAP.md)。尚未进入路线图的候选目标见 [editor-candidate-goals.md](editor-candidate-goals.md)
 
 | 编号 | 项 | 触发条件 | 处理方式 |
 |---|---|---|---|
@@ -390,3 +375,4 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | R05 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
 | R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
 | R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |
+| R14 | VS Code Markdown 粘贴 | 使用方频繁从 VS Code / Cursor 粘贴 `.md` 内容，并反馈被当成代码块 | 仅当剪贴板含 `vscode-editor-data` 且 `mode === 'markdown'` 时，按 Markdown 解析粘贴；其他语言仍按上游插入代码块。在核心包覆盖 `@milkdown/plugin-clipboard` 的 `handlePaste`，补充剪贴板模拟测试，并记录与上游的偏差 |
