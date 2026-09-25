@@ -1,6 +1,6 @@
 {
   "name": "@altmanlib/milkdown-kit-vue",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/altmanlib/milkdown-kit.git",
@@ -39,6 +39,6 @@
   ],
   "type": "module",
   "dependencies": {
-    "@altmanlib/milkdown-kit": "^0.2.0"
+    "@altmanlib/milkdown-kit": "^0.3.0"
   }
 }
