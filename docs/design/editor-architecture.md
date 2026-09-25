@@ -390,3 +390,4 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | R05 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
 | R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
 | R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |
+| R14 | VS Code Markdown 粘贴 | 使用方频繁从 VS Code / Cursor 粘贴 `.md` 内容，并反馈被当成代码块 | 仅当剪贴板含 `vscode-editor-data` 且 `mode === 'markdown'` 时，按 Markdown 解析粘贴；其他语言保持上游「插入代码块」行为。在核心包覆盖 `@milkdown/plugin-clipboard` 的 `handlePaste`，补充剪贴板模拟测试，并记录与上游的偏差。不默认关闭全部 VS Code 代码粘贴逻辑 |

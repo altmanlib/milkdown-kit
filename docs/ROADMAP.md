@@ -18,7 +18,7 @@ updated: 2026-09-25
 | 不复用 | 完成或放弃的计划从本文删除，编号不再分配给其他计划 |
 | 记录 | 完成的计划由 changeset 生成的 `CHANGELOG.md` 记录，对应 changeset 或 PR 中注明编号 |
 
-已分配到：R13
+已分配到：R14
 
 ## 2. 当前状态
 
@@ -44,6 +44,7 @@ updated: 2026-09-25
 | R10 | TypeScript 7 | vue-tsc 和 rolldown-plugin-dts 支持 TypeScript 7 的原生编译器 | [editor-architecture.md](design/editor-architecture.md) §4.7 |
 | R11 | Dependabot 管理 npm 依赖 | Dependabot 的 bun 更新器支持 `bun.lock` 的 `lockfileVersion` 2 | [release.md](guide/release.md) §3.1 |
 | R12 | 各包独立版本号 | 某个框架包需要升 major，而其他框架的使用方不应该跟着升 | [editor-architecture.md](design/editor-architecture.md) §4.9 |
+| R14 | VS Code Markdown 粘贴 | 使用方频繁从 VS Code / Cursor 粘贴 `.md` 内容，并反馈被当成代码块 | [editor-architecture.md](design/editor-architecture.md) §9 |
 
 ## 5. 明确不做
 
