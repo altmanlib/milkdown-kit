@@ -65,6 +65,7 @@ front matter 里列出改动涉及的包，每行一个。由于 `fixed` 分组�
 bun run check          # typecheck + tests + docs check
 bun run build
 bun run check:package  # publint + attw
+bun run check:size     # bundle size limits, see design doc §6
 ```
 
 改动涉及依赖、导出、构建配置或 CSS 时，再做一次使用方冒烟测试（设计文档 §6）：

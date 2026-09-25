@@ -293,7 +293,7 @@ token 清单见 [api.md](../reference/api.md) §5。Crepe 中只在一两处使�
 | 源码解析 | 类型检查、测试和 playground 把 `@altmanlib/milkdown-kit` 指向核心包源码（`tsconfig.json` 的 `paths` 和 `workspace-alias.ts`），不需要先构建 |
 | 开发预览 | 仓库内的 `playground/`（Vite + Vue），只用于演示，不进入发布产物 |
 | 版本与 changelog | changesets，配置 `access: public`。所有包放在同一个 `fixed` 分组，始终使用同一个版本号；每个包有自己的 `CHANGELOG.md` |
-| CI | `.github/workflows/ci.yml`：类型检查、测试、文档检查、构建、每个包的 publint 和 attw，并把 gzip 体积写入 job summary |
+| CI | `.github/workflows/ci.yml`：类型检查、测试、文档检查、构建、每个包的 publint 和 attw，以及体积检查（`bun run check:size`，结果写入 job summary） |
 | 发布 | `.github/workflows/release.yml`：`changesets/action` 在有 changeset 时开「Version Packages」PR，合并后执行 `bun run release`，通过 npm Trusted Publishing 发布并自动生成 provenance。操作步骤见 [release.md](../guide/release.md) |
 
 **结论**：多框架支持采用同一仓库的 monorepo，每个框架一个包
@@ -354,7 +354,15 @@ Crepe 内部用 Vue 实现部分界面（§2.1），所以 React 项目的编辑
 
 README 推荐使用方按需加载编辑器，包内不做额外的体积优化
 
-打包体积不设上限，CI 的 job summary 记录每次构建的 gzip 体积，作为以后设定上限的基线
+体积上限由 `scripts/check-size.ts` 检查：用 Vite 按使用方的方式打包构建后的核心包，统计 gzip 体积，超出上限或产物中出现 KaTeX 时失败
+
+| 产物 | 2026-09-25 基线（Milkdown 7.22.1） | 上限 |
+|---|---|---|
+| 首屏加载的 JS（核心包及全部依赖，含 Crepe 内部使用的 Vue 运行时） | 367,993 字节 | 405,000 字节 |
+| CSS | 7,633 字节 | 8,500 字节 |
+| 按需加载的 JS（代码语言语法） | 477,639 字节，117 个 chunk | 不限制 |
+
+上限约为基线加 10%。框架包自身只有 1 KB 左右（gzip），不单独设上限。升级 Milkdown 或新增功能导致超出时，确认增量合理后再提高上限，并在提交信息中写明原因
 
 ## 7. 迁移与兼容
 

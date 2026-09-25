@@ -20,8 +20,8 @@ jobs:
       - run: bun run check
       - run: bun run build
       - run: bun run check:package
-      - name: Bundle size baseline (gzip, not enforced)
+      - name: Bundle size (gzip, limits in scripts/check-size.ts)
         run: |
-          for file in packages/*/dist/*.js packages/core/dist/style.css; do
-            printf '%-50s %8s bytes\n' "$file" "$(gzip -c "$file" | wc -c)"
-          done >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          bun run check:size | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
