@@ -2,7 +2,7 @@
 title: 发版流程
 type: guide
 status: published
-updated: 2026-09-23
+updated: 2026-09-25
 ---
 
 # 发版流程
@@ -69,10 +69,10 @@ bun run check:package  # publint + attw
 
 改动涉及依赖、导出、构建配置或 CSS 时，再做一次使用方冒烟测试（设计文档 §6）：
 
-1. 分别在 `packages/core` 和 `packages/vue` 中执行 `bun pm pack --destination /tmp/mk-pack`
-2. 在一个空的 Vite + Vue 项目中，用同一条 `npm install` 命令安装两个 tgz（否则 Vue 包会从 registry 拉取已发布的核心包），并用 `npm ls @altmanlib/milkdown-kit` 确认只有一份；`tsconfig` 设 `skipLibCheck: false`
-3. 页面只从 `@altmanlib/milkdown-kit-vue` import 组件和 `style.css`
-4. 执行 `vue-tsc --noEmit` 和 `vite build`，并确认产物中没有 `katex`、CSS 中有 `--md-editor-*` token
+1. 分别在 `packages/core` 和要验证的框架包（`packages/vue` 或 `packages/react`）中执行 `bun pm pack --destination /tmp/mk-pack`
+2. 在一个空的 Vite + Vue（或 Vite + React）项目中，用同一条 `npm install` 命令安装两个 tgz（否则框架包会从 registry 拉取已发布的核心包），并用 `npm ls @altmanlib/milkdown-kit` 确认只有一份；`tsconfig` 设 `skipLibCheck: false`
+3. 页面只从框架包 import 组件和 `style.css`
+4. 执行 `vue-tsc --noEmit`（React 项目用 `tsc --noEmit`）和 `vite build`，并确认产物中没有 `katex`、CSS 中有 `--md-editor-*` token
 
 ### 2.3 推送与合并
 
@@ -89,10 +89,11 @@ bun run check:package  # publint + attw
 gh run list -R altmanlib/milkdown-kit --limit 4
 npm view @altmanlib/milkdown-kit version
 npm view @altmanlib/milkdown-kit-vue version dependencies
+npm view @altmanlib/milkdown-kit-react version dependencies
 ```
 
 - 各包的 npm 页面显示新版本，版本旁边有 provenance 标识
-- Vue 包的 `dependencies` 中核心包是普通版本范围，不是 `workspace:`
+- 框架包的 `dependencies` 中核心包是普通版本范围，不是 `workspace:`
 - GitHub 上每个包有 `<包名>@<version>` 的 tag 和 Release（例如 `@altmanlib/milkdown-kit@0.2.0`，多包仓库中 changesets 使用这个格式）
 
 新发布的版本在 registry 上有延迟，期间 `npm view` 和安装返回 404 属于正常现象。0.2.0 实测：版本元数据在 CI 报告发布成功后约 3 分钟出现，tarball 约 8 分钟后才能下载、安装（样本 1 次）；直接请求 `https://registry.npmjs.org/<包名>` 比 `npm view` 更早看到结果

@@ -317,12 +317,12 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 |---|---|---|
 | 往返 | vitest + happy-dom | 标题、行内标记、有序/无序/任务列表、引用、代码块、表格、分割线、中文、块级和行内图片（有无 title、有无 alt、缩放比例）；无 title 图片前后的内容不丢失 |
 | 核心 | vitest + happy-dom | 挂载与销毁、data 属性、`setMarkdown()` 不触发 `onChange`、用户编辑触发 `onChange`、只读切换、占位文案 |
-| 组件 | vitest + `@vue/test-utils` / `@testing-library/react` | 初始值与暴露的句柄、外部改值写入、自身发出的值不回写、只读响应、卸载时销毁、就绪前卸载 |
-| SSR | vitest（node 环境） | 在没有 DOM 的环境中 import 各包入口不报错 |
-| 包产物 | 每个包运行 `publint`、`@arethetypeswrong/cli`（`--profile esm-only`，排除 `style.css`） | `exports` 和类型声明正确 |
+| 组件 | vitest + `@vue/test-utils` / `@testing-library/react` | 初始值与暴露的句柄、外部改值写入、自身发出的值不回写、只读响应、卸载时销毁、就绪前卸载；React 另测 `className` / `style` 和 StrictMode 下只保留一个编辑器 |
+| SSR | vitest（node 环境） | 在没有 DOM 的环境中 import 各包入口不报错；React 组件在服务端只渲染宿主元素 |
+| 包产物 | 每个包运行 `publint`、`@arethetypeswrong/cli`（`--profile esm-only`，排除 `style.css`）；React 包再用 Node import 一次 `dist/index.js` | `exports` 和类型声明正确；React 产物不含未编译的 JSX |
+| 交互 | 在 playground 中手动验证 | 斜杠菜单、工具栏、代码语言选择、暗色、窄屏、关闭上传 |
 
 测试文件放在各包的 `tests/` 下，由根目录的一份 vitest 配置统一运行
-| 交互 | 在 playground 中手动验证 | 斜杠菜单、工具栏、代码语言选择、暗色、窄屏、关闭上传 |
 
 使用方冒烟测试：把各包 `bun pm pack` 打出的 tgz 安装到空的 Vite + Vue 项目，执行 `vue-tsc`（`skipLibCheck: false`）和 `vite build`，步骤见 [release.md](../guide/release.md) §2.2。2026-09-23 实测结果（monorepo 结构，Vite 8.3.0，样本各 1 次构建）：
 
@@ -333,6 +333,16 @@ npm Trusted Publishing 的要求（来自 npm 官方文档）：npm CLI ≥ 11.5
 | 按需加载时的编辑器 chunk | 239,884 字节 |
 | CSS | 7,792 字节 |
 | 代码语言语法 | 按需懒加载，拆成独立 chunk |
+
+React 包按同样步骤验证：空的 Vite + React 项目，执行 `tsc --noEmit`（`skipLibCheck: false`）和 `vite build`，并在 Chromium 中打开开发服务器，确认 StrictMode 下只有一个编辑器、输入触发 `onChange`、外部改值写入编辑器、斜杠菜单可用。2026-09-25 实测结果（React 19.3.0，Vite 8.3.1，样本各 1 次构建）：
+
+| 产物 | gzip 体积 |
+|---|---|
+| 静态引入时的首屏 JS（含 React 运行时） | 432,401 字节 |
+| 用 `React.lazy` 按需加载时的首屏 JS（含 React 运行时） | 68,821 字节 |
+| CSS | 7,792 字节 |
+
+Crepe 内部用 Vue 实现部分界面（§2.1），所以 React 项目的编辑器产物中同样包含 Vue 运行时
 
 README 推荐使用方按需加载编辑器，包内不做额外的体积优化
 
@@ -362,3 +372,4 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 | R05 | 公式支持 | 有使用方需要公式 | 在 `FeatureName` 中增加 `latex`，通过动态 import 加载，不启用时不打包 KaTeX |
 | R07 | 列表符号 | 使用方要求导出 `-` 而不是 `*` | 通过 Milkdown 的 remark-stringify 配置设置 `bullet: '-'`，并更新往返测试 |
 | R08 | 外层 token | 使用方需要在编辑器外框上使用主题 token | 把 token 同时定义到宿主元素上 |
+| R13 | React 18 支持 | 有接入项目停留在 React 18 | peer 依赖放宽到 `^18.0.0 \|\| ^19.0.0`（兼容变更）。`ref` 在 React 18 中不是普通 prop，需要改用 `forwardRef`；并在 CI 中加入 React 18 的测试 |

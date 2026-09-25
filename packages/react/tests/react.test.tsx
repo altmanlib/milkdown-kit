@@ -1,5 +1,5 @@
 import { act, cleanup, render, waitFor } from '@testing-library/react'
-import { useRef, useState, type ReactElement } from 'react'
+import { StrictMode, useRef, useState, type ReactElement } from 'react'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { type EditorHandle, MdEditor } from '../src'
@@ -129,5 +129,41 @@ describe('MdEditor', () => {
       await new Promise((resolve) => setTimeout(resolve, 100))
     })
     expect(host.querySelector('.md-editor')).toBeNull()
+  })
+
+  it('puts className and style on the host element', async () => {
+    let editor: EditorHandle | null = null
+    const view = render(
+      <MdEditor
+        className="custom"
+        style={{ height: '100px' }}
+        onReady={(handle) => {
+          editor = handle
+        }}
+      />,
+    )
+    await waitFor(() => expect(editor).not.toBeNull())
+    const host = view.container.firstElementChild as HTMLElement
+    expect(host.className).toBe('md-editor-host custom')
+    expect(host.style.height).toBe('100px')
+  })
+
+  it('keeps a single editor under StrictMode', async () => {
+    let editor: EditorHandle | null = null
+    const view = render(
+      <StrictMode>
+        <MdEditor
+          onReady={(handle) => {
+            editor = handle
+          }}
+        />
+      </StrictMode>,
+    )
+    await waitFor(() => expect(editor).not.toBeNull())
+    // Let the instance from the discarded first mount finish creating and destroy itself.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    })
+    expect(view.container.querySelectorAll('.md-editor')).toHaveLength(1)
   })
 })

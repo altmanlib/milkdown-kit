@@ -24,7 +24,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css"
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./style.css && node -e \"import('./dist/index.js')\""
   },
   "repository": {
     "type": "git",
