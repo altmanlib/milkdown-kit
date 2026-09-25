@@ -7,7 +7,7 @@ updated: 2026-09-25
 
 # 对外 API
 
-本文列出两个包对使用方公开的全部内容：JS 导出、Vue 组件、样式入口、CSS token 和 DOM 约定。未列在这里的都属于内部实现，可能随时变化。各项的取舍见 [editor-architecture.md](../design/editor-architecture.md) §4
+本文列出各包对使用方公开的全部内容：JS 导出、框架组件、样式入口、CSS token 和 DOM 约定。未列在这里的都属于内部实现，可能随时变化。各项的取舍见 [editor-architecture.md](../design/editor-architecture.md) §4
 
 ## 1. 导出清单
 
@@ -17,8 +17,10 @@ updated: 2026-09-25
 | `@altmanlib/milkdown-kit` | `./style.css` | 完整样式 |
 | `@altmanlib/milkdown-kit-vue` | `.` | 组件 `MdEditor`；类型 `MdEditorProps`，以及从核心包转发的 `EditorHandle`、`FeatureName`、`Locale`、`CodeBlockToolsMode` |
 | `@altmanlib/milkdown-kit-vue` | `./style.css` | 转发核心包的 `style.css` |
+| `@altmanlib/milkdown-kit-react` | `.` | 组件 `MdEditor`；类型 `MdEditorProps`，以及从核心包转发的 `EditorHandle`、`FeatureName`、`Locale`、`CodeBlockToolsMode` |
+| `@altmanlib/milkdown-kit-react` | `./style.css` | 转发核心包的 `style.css` |
 
-两个包都只输出 ESM。JS 入口不注入样式，使用方需要自己引入 `style.css`
+所有包都只输出 ESM。JS 入口不注入样式，使用方需要自己引入 `style.css`
 
 ## 2. createEditor
 
@@ -63,29 +65,41 @@ function createEditor(root: HTMLElement, options?: MdEditorOptions): Promise<Edi
 
 ## 4. MdEditor 组件
 
-### 4.1 Props
+两个框架包都导出 `MdEditor`。组件的根节点是 `div.md-editor-host`，组件上的 class / style 落在这里。标为「仅创建时」的 props 变化后不生效，需要通过 `key` 重建组件
 
-| Prop | 类型 | 默认 | 响应式 | 说明 |
+### 4.1 Vue
+
+| Prop | 类型 | 默认 | 仅创建时 | 说明 |
 |---|---|---|---|---|
-| `modelValue` | `string` | `''` | 是 | 配合 `v-model` 使用。外部改值时调用 `setMarkdown()`；组件自己发出的值不会回写 |
-| `readonly` | `boolean` | `false` | 是 | 变化时调用 `setReadonly()` |
-| `placeholder` | `string` | 按 `locale` | 否 | 同 `MdEditorOptions` |
-| `uploadImage` | `(file: File) => Promise<string>` | — | 否 | 同 `MdEditorOptions` |
-| `features` | `Partial<Record<FeatureName, boolean>>` | 全部开启 | 否 | 同 `MdEditorOptions` |
-| `locale` | `Locale` | `'zh-CN'` | 否 | 同 `MdEditorOptions` |
-| `codeBlockTools` | `CodeBlockToolsMode` | `'always'` | 否 | 同 `MdEditorOptions` |
+| `modelValue` | `string` | `''` | 否 | 配合 `v-model` 使用。外部改值时调用 `setMarkdown()`；组件自己发出的值不会回写 |
+| `readonly` | `boolean` | `false` | 否 | 变化时调用 `setReadonly()` |
+| `placeholder` | `string` | 按 `locale` | 是 | 同 `MdEditorOptions` |
+| `uploadImage` | `(file: File) => Promise<string>` | — | 是 | 同 `MdEditorOptions` |
+| `features` | `Partial<Record<FeatureName, boolean>>` | 全部开启 | 是 | 同 `MdEditorOptions` |
+| `locale` | `Locale` | `'zh-CN'` | 是 | 同 `MdEditorOptions` |
+| `codeBlockTools` | `CodeBlockToolsMode` | `'always'` | 是 | 同 `MdEditorOptions` |
 
-非响应式的 props 需要变化时，通过 `:key` 重建组件
-
-### 4.2 事件与实例
-
-| 项 | 类型 | 说明 |
+| 事件与实例 | 类型 | 说明 |
 |---|---|---|
 | `update:modelValue` 事件 | `(value: string)` | 用户编辑后触发，200ms 防抖 |
 | `ready` 事件 | `(editor: EditorHandle)` | 编辑器就绪后触发一次 |
 | 模板 ref 上的 `editor` | `ShallowRef<EditorHandle \| null>` | 就绪前为 `null`，卸载后恢复为 `null` |
 
-组件的根节点是 `div.md-editor-host`，组件上的 `class` / `style` 落在这里
+### 4.2 React
+
+要求 `react` / `react-dom` 19
+
+| Prop | 类型 | 默认 | 仅创建时 | 说明 |
+|---|---|---|---|---|
+| `value` | `string` | `''` | 否 | 外部改值时调用 `setMarkdown()`；`onChange` 发出的值不会回写 |
+| `onChange` | `(markdown: string) => void` | — | 否 | 用户编辑后触发，200ms 防抖 |
+| `readonly` | `boolean` | `false` | 否 | 变化时调用 `setReadonly()` |
+| `onReady` | `(editor: EditorHandle) => void` | — | 否 | 编辑器就绪后调用一次，此时 `ref` 已指向编辑器 |
+| `ref` | `Ref<EditorHandle \| null>` | — | 否 | 普通 prop，不需要 `forwardRef`。就绪前为 `null`，卸载后恢复为 `null` |
+| `className`、`style` | `string`、`CSSProperties` | — | 否 | 设置在 `div.md-editor-host` 上 |
+| `placeholder`、`uploadImage`、`features`、`locale`、`codeBlockTools` | 同 `MdEditorOptions` | 同 `MdEditorOptions` | 是 | 同 `MdEditorOptions` |
+
+`onChange`、`onReady` 总是调用最近一次渲染传入的函数
 
 ## 5. CSS token
 
