@@ -76,7 +76,7 @@ bun run check:package  # publint + attw
 
 ### 2.3 推送与合并
 
-1. 把功能分支 squash 合并到 `main` 并推送（流程见 [AGENTS.md](../../AGENTS.md)）。CI（`ci.yml`）和 Release（`release.yml`）同时运行
+1. 把开发分支 squash 合并到 `main` 并推送（流程见 [AGENTS.md](../../AGENTS.md)）。CI（`ci.yml`）和 Release（`release.yml`）同时运行
 2. Release 发现有 changeset，会创建或更新「Version Packages」PR，内容是版本号和 `CHANGELOG.md` 的改动
 3. 检查 PR 中的版本号和 CHANGELOG，合并
 4. 合并后 Release 再次运行：没有剩余 changeset，执行 `bun run release`（`bun run build && changeset publish`），把 registry 上还没有的版本逐个发布，自动生成 provenance，并为每个发布的包创建 git tag 和 GitHub Release
