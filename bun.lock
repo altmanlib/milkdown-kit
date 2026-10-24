@@ -32,7 +32,7 @@
     },
     "packages/core": {
       "name": "@altmanlib/milkdown-kit",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "dependencies": {
         "@codemirror/language": "^6.10.1",
         "@codemirror/language-data": "^6.3.1",
@@ -44,9 +44,9 @@
     },
     "packages/react": {
       "name": "@altmanlib/milkdown-kit-react",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "dependencies": {
-        "@altmanlib/milkdown-kit": "^0.2.0",
+        "@altmanlib/milkdown-kit": "^0.4.0",
       },
       "peerDependencies": {
         "react": "^19.0.0",
@@ -55,9 +55,9 @@
     },
     "packages/vue": {
       "name": "@altmanlib/milkdown-kit-vue",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "dependencies": {
-        "@altmanlib/milkdown-kit": "^0.2.0",
+        "@altmanlib/milkdown-kit": "^0.4.0",
       },
       "peerDependencies": {
         "vue": "^3.5.0",
