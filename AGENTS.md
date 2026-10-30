@@ -4,6 +4,10 @@
 - 方案依据见 [docs/design/editor-architecture.md](docs/design/editor-architecture.md)；改动公开 API、依赖、主题 token 或构建发布流程时同步更新该文档
 - 发版、changeset、npm / GitHub 发布配置相关的操作，先读 [docs/guide/release.md](docs/guide/release.md)
 
+## 开工前同步远端
+
+动手前先在要改动的 Git 仓根目录检查远程有没有新提交：`git fetch` 后用 `git status -sb` 看是否 `behind`，有则先 `git pull --ff-only` 拉下来再开工；无法快进（分叉）时停下来告知用户，不擅自 merge / rebase。同一会话内已拉取过的，不必重复拉取。
+
 ## 仓库结构
 
 bun workspaces monorepo：`packages/core`（`@altmanlib/milkdown-kit`）、`packages/vue`（`@altmanlib/milkdown-kit-vue`）、`packages/react`（`@altmanlib/milkdown-kit-react`）
