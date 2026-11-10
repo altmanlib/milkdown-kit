@@ -1,5 +1,23 @@
 {
   "name": "milkdown-kit-monorepo",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vite --config playground/vite.config.ts",
+    "build": "bun run --filter @altmanlib/milkdown-kit build && bun run --filter @altmanlib/milkdown-kit-vue build && bun run --filter @altmanlib/milkdown-kit-react build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "check:docs": "bun scripts/check-docs.ts",
+    "check:package": "bun run --filter './packages/*' check:package",
+    "check:size": "bun scripts/check-size.ts",
+    "release": "bun run build && changeset publish",
+    "check": "bun run typecheck && bun run test && bun run check:docs"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "packageManager": "bun@1.4.2",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
     "@changesets/cli": "^3.0.3",
@@ -24,23 +42,5 @@
     "vue": "^3.5.0",
     "vue-tsc": "^3.3.11",
     "yaml": "^2.9.1"
-  },
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "dev": "vite --config playground/vite.config.ts",
-    "build": "bun run --filter @altmanlib/milkdown-kit build && bun run --filter @altmanlib/milkdown-kit-vue build && bun run --filter @altmanlib/milkdown-kit-react build",
-    "typecheck": "vue-tsc --noEmit",
-    "test": "vitest run",
-    "check:docs": "bun scripts/check-docs.ts",
-    "check:package": "bun run --filter './packages/*' check:package",
-    "check:size": "bun scripts/check-size.ts",
-    "release": "bun run build && changeset publish",
-    "check": "bun run typecheck && bun run test && bun run check:docs"
-  },
-  "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
-  "packageManager": "bun@1.4.2"
+  }
 }
