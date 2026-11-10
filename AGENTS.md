@@ -4,7 +4,7 @@
 
 ## 开工
 
-- 动手前在仓库根 `git fetch`, 再 `git status -sb`; 落后则 `git pull --ff-only`; 分叉则停下告知用户, 不擅自 rebase 或强制推送(本仓 `agent/develop` 约定是把 `main` 合并进来, 不改写已推送历史)
+- 动手前在仓库根 `git fetch`, 再 `git status -sb`; 落后则 `git pull --ff-only`; 分叉则 `git rebase @{u}`, 无冲突后 `git push --force-with-lease`; rebase 冲突则停下告知用户(可 `git rebase --abort`), 不擅自继续
 - 先读 @ROADMAP.md; 选任务与断点按 ROADMAP 文首规则; 能直接解决的小问题顺手处理, 不登记成任务
 - 发现债务当场还掉, 或登记进 `ROADMAP.md` 并写明触发条件; 需要拍板的进「待决策」
 
@@ -55,9 +55,8 @@
 
 ## Git 工作流
 
-- 开发分支 `agent/develop`; agent 改动只在该分支, 可自行 commit / push
+- 开发分支 `dev`; agent 改动只在该分支, 可自行 commit / push
 - 远程 `git@github.com:altmanlib/milkdown-kit.git`(公开, 默认分支 `main`)
-- 开始新功能前把 `main` 合并进 `agent/develop`, 不 rebase、不强制推送已推送历史
 - 合并到 `main`、推送 `main`、打 tag、创建 GitHub Release、合并「Version Packages」PR: 须用户明确确认
 - 功能完成后先跑 `bun run check`、`bun run build`、`bun run check:package`、`bun run check:size`, 全部通过并经确认后用 `git merge --squash` 合并到 `main` 并推送
 - 不在本地执行 `npm publish`; 发布由 CI 完成, 例外按 [release.md](docs/guide/release.md) §5
