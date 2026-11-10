@@ -2,7 +2,7 @@
 title: 编辑器封装方案
 type: design
 status: published
-updated: 2026-09-25
+updated: 2026-11-10
 ---
 
 # 编辑器封装方案
@@ -367,7 +367,7 @@ Markdown 往返中的格式规范化（列表符号、标题风格等）不改�
 
 ## 8. 开放项
 
-编号和排期见 [ROADMAP.md](../ROADMAP.md)。尚未进入路线图的候选目标见 [editor-candidate-goals.md](editor-candidate-goals.md)
+编号和排期见 [ROADMAP.md](../../ROADMAP.md). 尚未进入路线图的候选目标见 [editor-candidate-goals.md](editor-candidate-goals.md)
 
 | 编号 | 项 | 触发条件 | 处理方式 |
 |---|---|---|---|

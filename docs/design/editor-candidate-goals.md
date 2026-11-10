@@ -2,14 +2,14 @@
 title: 开箱编辑器候选目标
 type: design
 status: draft
-updated: 2026-09-25
+updated: 2026-11-10
 ---
 
 # 开箱编辑器候选目标
 
 ## 1. 目标与范围
 
-在 [editor-architecture.md](editor-architecture.md) 已定方案之上，整理后续可评估的目标，供决定是否进入 [ROADMAP.md](../ROADMAP.md)
+在 [editor-architecture.md](editor-architecture.md) 已定方案之上, 整理后续可评估的目标, 供决定是否进入 [ROADMAP.md](../../ROADMAP.md)
 
 | 项 | 结论 |
 |---|---|
@@ -29,7 +29,7 @@ updated: 2026-09-25
 | 文案与主题 | 默认 `zh-CN`；紧凑主题与 CSS token；代码高亮跟随亮暗色 |
 | 业务注入 | `uploadImage` 等回调由使用方提供 |
 | 可靠性 | 图片 Markdown 规避；往返 / 组件 / SSR import / 包产物 / 体积上限检查 |
-| 已登记按需项 | R02、R05、R07–R12、R14，见 [ROADMAP.md](../ROADMAP.md) §4 |
+| 已登记暂缓项 | R02、R05、R07–R12、R14, 见 [ROADMAP.md](../../ROADMAP.md)「暂缓」 |
 
 公开 API、分层与原则以 [editor-architecture.md](editor-architecture.md) 为准
 
@@ -139,5 +139,5 @@ updated: 2026-09-25
 
 1. 本文保持 `draft` 候选池
 2. 从 §5 指定一组做利弊评估
-3. 接纳后写入 [ROADMAP.md](../ROADMAP.md) 并分配编号；需要方案细节时另开 `design` 文档
+3. 接纳后写入 [ROADMAP.md](../../ROADMAP.md) 并分配编号; 需要方案细节时另开 `design` 文档
 4. 过时候选直接删除
